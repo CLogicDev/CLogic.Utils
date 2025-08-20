@@ -1,0 +1,17 @@
+{
+    "name": "CLogic.Utils.Tests",
+    "rootNamespace": "CLogic.Utils.Tests",
+    "references": [
+        "GUID:6ac5d8d0653b8a74b809112608cbc455",
+        "GUID:18e444a6db19f1443abb7f71f386f519"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

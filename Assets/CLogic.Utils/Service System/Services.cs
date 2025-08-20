@@ -27,9 +27,9 @@ namespace CLogic.Utils
         
         public static void Register<T>(T instance, LifeCycle lifeCycle) where T : IDisposable => manager.Register(instance, lifeCycle);
         
-        public static void HasService<T>(LifeCycle lifeCycle) where T : IDisposable => manager.HasService<T>(lifeCycle);
+        public static bool HasService<T>(LifeCycle lifeCycle) where T : IDisposable => manager.HasService<T>(lifeCycle);
 
-        public static void DeRegister<T>(LifeCycle lifeCycle) => manager.DeRegister<T>(lifeCycle);
+        public static bool DeRegister<T>(LifeCycle lifeCycle) => manager.DeRegister<T>(lifeCycle);
         
         public static void EndLifeCycle(LifeCycle lifeCycle) => manager.EndLifeCycle(lifeCycle);
 
