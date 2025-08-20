@@ -1,10 +1,12 @@
 ﻿using System;
+using CLogic.Core.DataSaving;
 using CLogic.Core.LifeCycles;
 using UnityEngine;
 namespace CLogic.Utils.Tests
 {
     public class SingletonTestService : MonoBehaviour, IDisposable
     {
+        private PersistentProperty<float> score;
         private void Awake()
         {
             if(Services.HasService<SingletonTestService>(SingletonLifeCycle.Instance))
