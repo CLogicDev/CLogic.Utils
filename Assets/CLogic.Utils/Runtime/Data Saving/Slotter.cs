@@ -18,8 +18,8 @@ namespace CLogic.Utils.Runtime.DataSaving
             set
             {
                 currentSlotId = value;
-                
-                Environment.SetEnvironmentVariable("SLOT_ID", currentSlotId);
+
+                SetEnvironment();
                 
                 if(Services.HasService<GameData>(SingletonLifeCycle.Instance))
                     Services.Resolve<GameData>(SingletonLifeCycle.Instance).RefreshSections();
@@ -27,9 +27,15 @@ namespace CLogic.Utils.Runtime.DataSaving
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        public static void SetEnvironment()
+        static void SetEnvironment()
         {
             Environment.SetEnvironmentVariable("SLOT_ID", currentSlotId);
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetSlot()
+        {
+            currentSlotId = string.Empty;   
         }
         
         private static string currentSlotId = "NoSlotIDSet";
