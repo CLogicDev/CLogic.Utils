@@ -23,7 +23,7 @@ namespace CLogic.Utils
             updater.hideFlags = HideFlags.HideAndDontSave;
         }
 
-        public static void Resolve<T>(LifeCycle lifeCycle) => manager.Resolve<T>(lifeCycle);
+        public static T Resolve<T>(LifeCycle lifeCycle) => manager.Resolve<T>(lifeCycle);
         
         public static void Register<T>(T instance, LifeCycle lifeCycle) where T : IDisposable => manager.Register(instance, lifeCycle);
         
