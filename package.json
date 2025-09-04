@@ -7,7 +7,7 @@
   "documentationUrl": "https://docs.clogic.dev/CLogic.Utils",
   "licensesUrl": "https://github.com/CLogicDev/CLogic.Utils/blob/main/LICENSE",
   "dependencies": {
-    "dev.clogic.core": "https://github.com/CLogicDev/CLogic.Core.git#v0.0.1"
+    "dev.clogic.core": "v0.0.1"
   },
   "keywords": [
     "keyword1",
