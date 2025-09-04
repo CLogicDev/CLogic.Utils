@@ -27,9 +27,9 @@ namespace CLogic.Utils
     public class UnitySingletonLifeCycle : LifeCycle<UnitySingletonLifeCycle>
     {
         public override bool IsAlive => !stateChanged;
+        private bool stateChanged = false;
 
         #if UNITY_EDITOR
-        public bool stateChanged = false;
         
         public UnitySingletonLifeCycle()
         {
