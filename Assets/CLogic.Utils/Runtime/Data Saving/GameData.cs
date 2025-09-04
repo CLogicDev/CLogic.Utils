@@ -24,17 +24,12 @@ namespace CLogic.Utils.DataSaving
             Services.Register(this, UnitySingletonLifeCycle.Instance);
             
             Debug.Log(dataSections[0].GetDataPath().GetPath());
-
-            RefreshSections();
         }
         
-        public void RefreshSections()
-        {
-            DataSaver = new DataSaver(new List<IDataSection>(dataSections));
-        }
         
         public void Dispose()
         {
+            //TODO: Dispose of data saver?
             Destroy(this);
         }
     }

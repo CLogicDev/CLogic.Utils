@@ -6,6 +6,9 @@ namespace CLogic.Utils.Runtime.DataSaving
 {
     public static class Slotter
     {
+        private static string currentSlotId = defaultSlotId;
+        private const string defaultSlotId = "NoSlotIDSet";
+        
         /// <summary>
         /// Retrieves or updates the current slot ID and refreshes the sections if applicable
         /// </summary>
@@ -20,9 +23,6 @@ namespace CLogic.Utils.Runtime.DataSaving
                 currentSlotId = value;
 
                 SetEnvironment();
-                
-                if(Services.HasService<GameData>(SingletonLifeCycle.Instance))
-                    Services.Resolve<GameData>(SingletonLifeCycle.Instance).RefreshSections();
             }
         }
 
@@ -32,12 +32,12 @@ namespace CLogic.Utils.Runtime.DataSaving
             Environment.SetEnvironmentVariable("SLOT_ID", currentSlotId);
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         static void ResetSlot()
         {
-            currentSlotId = string.Empty;   
+            if(currentSlotId != defaultSlotId)
+                currentSlotId = string.Empty;   
         }
-        
-        private static string currentSlotId = "NoSlotIDSet";
+
     }
 }
