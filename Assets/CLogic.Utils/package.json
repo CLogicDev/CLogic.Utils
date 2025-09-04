@@ -1,0 +1,22 @@
+{
+  "name": "dev.clogic.utils",
+  "version": "0.0.1",
+  "displayName": "CLogic Utils",
+  "description": "A global utility package for Unity by the CLogic team.",
+  "unity": "2019.1",
+  "documentationUrl": "https://docs.clogic.dev/CLogic.Utils",
+  "licensesUrl": "https://github.com/CLogicDev/CLogic.Utils/blob/main/LICENSE",
+  "dependencies": {
+    "dev.clogic.core": "https://github.com/CLogicDev/CLogic.Core.git#v0.0.1"
+  },
+  "keywords": [
+    "keyword1",
+    "keyword2",
+    "keyword3"
+  ],
+  "author": {
+    "name": "CLogic",
+    "email": "management@clogic.dev",
+    "url": "https://clogic.dev"
+  }
+}
