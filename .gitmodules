@@ -3,4 +3,4 @@
 	url = https://github.com/CLogicDev/CLogic.Core
 [submodule "Assets/Dependencies/CLogic.Core"]
 	path = Assets/Dependencies/CLogic.Core
-	url = https://github.com/CLogicDev/CLogic.Core
+	url = https://github.com/CLogicDev/CLogic.Core.git
