@@ -2,7 +2,7 @@
 using CLogic.Core.LifeCycles;
 using CLogic.Utils.DataSaving;
 using UnityEngine;
-namespace CLogic.Utils.Runtime.DataSaving
+namespace CLogic.Utils.DataSaving
 {
     public static class Slotter
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-namespace CLogic.Utils.Runtime
+namespace CLogic.Utils
 {
     static class EnvUtils
     {
