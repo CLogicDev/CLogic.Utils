@@ -6,31 +6,21 @@ using CLogic.Utils.DataSaving.Sections;
 using UnityEngine;
 namespace CLogic.Utils.DataSaving
 {
-    [ExecuteAlways]
-    public class GameData : MonoBehaviour, IDisposable
+    public static class GameData
     {
-        public DataSaver DataSaver { get; private set; }
+        public static DataSaver DataSaver { get; private set; }
+        
+        public static List<BaseDataSectionSo> dataSections = new();
 
-        public List<BaseDataSectionSo> dataSections = new();
-        
-        private void Awake()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void UpdateSections()
         {
-            if(Services.HasService<GameData>(UnitySingletonLifeCycle.Instance))
-            {
-                Destroy(this);
-                return;
-            }
+            DataSectionSettings settings = DataSectionSettings.GetOrCreate();
+            dataSections = settings.dataSections;
             
-            Services.Register(this, UnitySingletonLifeCycle.Instance);
+            List<IDataSection> saveSections = new (settings.dataSections);
+            DataSaver = new DataSaver(saveSections);
             
-            Debug.Log(dataSections[0].GetDataPath().GetPath());
-        }
-        
-        
-        public void Dispose()
-        {
-            //TODO: Dispose of data saver?
-            Destroy(this);
         }
     }
 }
