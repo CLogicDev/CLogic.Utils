@@ -12,15 +12,26 @@ namespace CLogic.Utils.DataSaving
         
         public static List<BaseDataSectionSo> dataSections = new();
 
+        public static bool IsInitialized => DataSaver != null;
+        
+        public static Action OnSectionsUpdated;
+        public static Action OnDataInitialized;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void UpdateSections()
         {
+            bool isInitializing = DataSaver == null;
+            
             DataSectionSettings settings = DataSectionSettings.GetOrCreate();
             dataSections = settings.dataSections;
             
             List<IDataSection> saveSections = new (settings.dataSections);
             DataSaver = new DataSaver(saveSections);
             
+            if(isInitializing)
+                OnDataInitialized?.Invoke();
+            
+            OnSectionsUpdated?.Invoke();
         }
     }
 }

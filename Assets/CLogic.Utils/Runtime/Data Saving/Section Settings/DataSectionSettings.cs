@@ -9,9 +9,6 @@ namespace CLogic.Utils.DataSaving.Sections
         
         public List<BaseDataSectionSo> dataSections;
 
-        public delegate void SectionUpdated(List<BaseDataSectionSo> sections);
-        public event SectionUpdated OnSectionUpdated;
-
         private static DataSectionSettings cache;
 
         public static DataSectionSettings GetOrCreate()
