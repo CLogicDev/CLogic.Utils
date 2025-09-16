@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 namespace CLogic.Utils.DataSaving.Sections
 {
     public class DataSectionSettings : ScriptableObject
     {
+        internal const string SETTINGS_FILE_PATH = "Assets/Resources/DataSectionSettings.asset";
         internal const string KEY = "dev.clogic.datasections";
         
         public List<BaseDataSectionSo> dataSections;
@@ -13,7 +15,8 @@ namespace CLogic.Utils.DataSaving.Sections
 
         public static DataSectionSettings GetOrCreate()
         {
-            #if UNITY_EDITOR
+        #if UNITY_EDITOR
+            Debug.LogWarning("IS CURRENTLY ON UNITY EDITOR");
             if(cache != null || UnityEditor.EditorBuildSettings.TryGetConfigObject(KEY, out cache))
                 return cache;
 
@@ -22,7 +25,11 @@ namespace CLogic.Utils.DataSaving.Sections
             UnityEditor.AssetDatabase.SaveAssets();
                     
             UnityEditor.EditorBuildSettings.AddConfigObject(KEY, cache, true);
-            #endif
+            
+        #else    
+            cache = Resources.Load<DataSectionSettings>(Path.GetFileNameWithoutExtension(SETTINGS_FILE_PATH));
+        #endif
+
             
             return cache;
         }

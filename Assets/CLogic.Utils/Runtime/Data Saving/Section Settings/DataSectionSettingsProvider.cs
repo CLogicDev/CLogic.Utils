@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 namespace CLogic.Utils.DataSaving.Sections
 {
@@ -33,3 +34,4 @@ namespace CLogic.Utils.DataSaving.Sections
         }
     }
 }
+#endif

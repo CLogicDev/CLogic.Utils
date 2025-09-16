@@ -6,15 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
     path: Assets/CLogic.Utils/Tests/LifeCycle Test A.unity
     guid: 5e7218cb4f334024383cd0711901708d
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: fd346598662df1f468f12bbf59462d02
   - enabled: 1
     path: Assets/CLogic.Utils/Tests/LifeCycle Test B.unity
     guid: 81a89f4f055821646b8b63be811348a5
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 6ee41fd40a9fad3489cdd4c0bfcd0d94, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     dev.clogic.datasections: {fileID: 11400000, guid: 58bd25e5e6624de46811c703035d43be, type: 2}
   m_UseUCBPForAssetBundles: 0
