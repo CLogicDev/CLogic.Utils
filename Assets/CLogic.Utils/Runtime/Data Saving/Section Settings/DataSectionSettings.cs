@@ -8,15 +8,14 @@ namespace CLogic.Utils.DataSaving.Sections
     {
         internal const string SETTINGS_FILE_PATH = "Assets/Resources/DataSectionSettings.asset";
         internal const string KEY = "dev.clogic.datasections";
-        
-        public List<BaseDataSectionSo> dataSections;
+
+        public List<BaseDataSectionSo> dataSections = new();
 
         private static DataSectionSettings cache;
 
         public static DataSectionSettings GetOrCreate()
         {
         #if UNITY_EDITOR
-            Debug.LogWarning("IS CURRENTLY ON UNITY EDITOR");
             if(cache != null || UnityEditor.EditorBuildSettings.TryGetConfigObject(KEY, out cache))
                 return cache;
 
