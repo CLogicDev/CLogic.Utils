@@ -10,6 +10,7 @@ namespace CLogic.Utils.DataSaving.Sections
         internal const string KEY = "dev.clogic.datasections";
 
         public List<BaseDataSectionSo> dataSections = new();
+        public string defaultSlot = "Default";
 
         private static DataSectionSettings cache;
 

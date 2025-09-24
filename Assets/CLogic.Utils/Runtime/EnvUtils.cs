@@ -5,10 +5,17 @@ namespace CLogic.Utils
 {
     static class EnvUtils
     {
+        public static bool EnvironmentSet { get; private set; } = false;
+
+        public static event Action onEnvironmentSet;
+        
         /// <summary>
         /// Adds some useful environment variables for the saving system
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        #if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        #endif
         static void InjectEnvironmentVariables()
         {
             Dictionary<string, string> environmentVariables = new()
@@ -27,6 +34,8 @@ namespace CLogic.Utils
                     Environment.SetEnvironmentVariable(kvp.Key, kvp.Value);
                 }
             }
+            EnvironmentSet = true;
+            onEnvironmentSet?.Invoke();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace CLogic.Utils.Runtime.DataSaving
                 UpdateSlot();   
         }
         
+        
         void UpdateSlot()
         {
             if(Application.isEditor && !editorSupport)

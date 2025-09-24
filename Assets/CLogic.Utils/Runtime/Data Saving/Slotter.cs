@@ -8,6 +8,7 @@ namespace CLogic.Utils.DataSaving
     {
         private static string currentSlotId = defaultSlotId;
         private const string defaultSlotId = "NoSlotIDSet";
+        public const string ENVIRONMENT_VARIABLE_NAME = "SLOT_ID";
         
         /// <summary>
         /// Retrieves or updates the current slot ID and refreshes the sections if applicable
@@ -29,7 +30,7 @@ namespace CLogic.Utils.DataSaving
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void SetEnvironment()
         {
-            Environment.SetEnvironmentVariable("SLOT_ID", currentSlotId);
+            Environment.SetEnvironmentVariable(ENVIRONMENT_VARIABLE_NAME, currentSlotId);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
