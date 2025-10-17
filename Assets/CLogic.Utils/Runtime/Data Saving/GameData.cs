@@ -6,31 +6,58 @@ using CLogic.Utils.DataSaving.Sections;
 using UnityEngine;
 namespace CLogic.Utils.DataSaving
 {
-    [ExecuteAlways]
-    public class GameData : MonoBehaviour, IDisposable
+    public static class GameData
     {
-        public DataSaver DataSaver { get; private set; }
-
-        public List<BaseDataSectionSo> dataSections = new();
+        public static DataSaver DataSaver { get; private set; } // rest
         
-        private void Awake()
+        public static List<BaseDataSectionSo> dataSections = new();
+
+        public static bool IsInitialized => DataSaver != null;
+        
+        static bool canUpdateSections = true;
+        
+        public static Action OnSectionsUpdated;
+        public static Action OnDataInitialized;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        #if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        #endif
+        public static void UpdateSections()
         {
-            if(Services.HasService<GameData>(UnitySingletonLifeCycle.Instance))
+            if(!canUpdateSections)
+                return;
+            if(!EnvUtils.EnvironmentSet)
             {
-                Destroy(this);
+                EnvUtils.onEnvironmentSet += UpdateSectionsInternal;
                 return;
             }
-            
-            Services.Register(this, UnitySingletonLifeCycle.Instance);
-            
-            Debug.Log(dataSections[0].GetDataPath().GetPath());
+            UpdateSectionsInternal();
         }
-        
-        
-        public void Dispose()
+
+        static void UpdateSectionsInternal()
         {
-            //TODO: Dispose of data saver?
-            Destroy(this);
+            bool isFirstInit = DataSaver == null;
+            
+            canUpdateSections = false; // Prevents updating section twice due to OnValidate
+            DataSectionSettings settings = DataSectionSettings.GetOrCreate();
+            canUpdateSections = true;
+            
+            //Setup slots
+            if(Environment.GetEnvironmentVariable(Slotter.ENVIRONMENT_VARIABLE_NAME) == null)
+                Environment.SetEnvironmentVariable(Slotter.ENVIRONMENT_VARIABLE_NAME, settings.defaultSlot);
+            
+            dataSections = settings.dataSections;
+            
+            List<IDataSection> saveSections = new (settings.dataSections);
+            DataSaver = new DataSaver(saveSections);
+            
+            if(isFirstInit)
+                OnDataInitialized?.Invoke();
+            
+            OnSectionsUpdated?.Invoke();
+            EnvUtils.onEnvironmentSet -= UpdateSectionsInternal;
+            
         }
     }
 }

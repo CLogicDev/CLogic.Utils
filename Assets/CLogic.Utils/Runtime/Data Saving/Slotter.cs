@@ -2,12 +2,13 @@
 using CLogic.Core.LifeCycles;
 using CLogic.Utils.DataSaving;
 using UnityEngine;
-namespace CLogic.Utils.Runtime.DataSaving
+namespace CLogic.Utils.DataSaving
 {
     public static class Slotter
     {
         private static string currentSlotId = defaultSlotId;
         private const string defaultSlotId = "NoSlotIDSet";
+        public const string ENVIRONMENT_VARIABLE_NAME = "SLOT_ID";
         
         /// <summary>
         /// Retrieves or updates the current slot ID and refreshes the sections if applicable
@@ -29,7 +30,7 @@ namespace CLogic.Utils.Runtime.DataSaving
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void SetEnvironment()
         {
-            Environment.SetEnvironmentVariable("SLOT_ID", currentSlotId);
+            Environment.SetEnvironmentVariable(ENVIRONMENT_VARIABLE_NAME, currentSlotId);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]

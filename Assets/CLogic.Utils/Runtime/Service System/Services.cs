@@ -8,6 +8,9 @@ namespace CLogic.Utils
     {
         static ServiceManager manager = new();
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        #if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        #endif
         static void SetupManager()
         {
             manager?.Dispose();
