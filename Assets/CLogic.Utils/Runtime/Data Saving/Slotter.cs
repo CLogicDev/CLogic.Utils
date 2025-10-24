@@ -7,7 +7,7 @@ namespace CLogic.Utils.DataSaving
     public static class Slotter
     {
         private static string currentSlotId = defaultSlotId;
-        private const string defaultSlotId = "NoSlotIDSet";
+        public const string defaultSlotId = "NoSlotIDSet";
         public const string ENVIRONMENT_VARIABLE_NAME = "SLOT_ID";
         
         /// <summary>
@@ -27,17 +27,15 @@ namespace CLogic.Utils.DataSaving
             }
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void SetEnvironment()
         {
             Environment.SetEnvironmentVariable(ENVIRONMENT_VARIABLE_NAME, currentSlotId);
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetSlot()
         {
-            if(currentSlotId != defaultSlotId)
-                currentSlotId = string.Empty;   
+            CurrentSlotId = defaultSlotId;
         }
 
     }
