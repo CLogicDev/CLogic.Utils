@@ -21,7 +21,9 @@ namespace CLogic.Utils.Logger
             public Color fatal = Color.red;
         }
 
-        public LogColors logColors = new LogColors();
+        public LogColors logColors = new ();
+
+        public string logFilePath = "%PERSISTENT_DATA%/Logs/log.txt";
         
         public static LoggerSettings GetOrCreate()
         {
