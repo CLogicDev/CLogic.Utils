@@ -1,59 +1,57 @@
 ﻿using System;
 using System.IO;
-using CLogic.Core;
-using UnityEngine;
+
 namespace CLogic.Utils
 {
-    public static partial class StaticUtils
-    {
-        public static T TryUntil<T>(Func<int, T> generator, Predicate<T> condition, int start = 0, int step = 1, int maxTries = 1000)
-        {
-            int currentTries = start;
-            bool passed = false;
+	public static partial class StaticUtils
+	{
+		public static T TryUntil<T>(Func<int, T> generator, Predicate<T> condition, int start = 0, int maxTries = 1000)
+		{
+			int currentTries = start;
+			bool passed = false;
 
-            T generated = default(T);
+			T generated = default;
 
-            maxTries = start + maxTries;
-            while (!passed)
-            {
-                if(maxTries == currentTries)
-                    return default(T);
-                
-                generated = generator(currentTries);
-                passed = condition(generated);
-                currentTries++;
-            }
+			maxTries = start + maxTries;
+			while (!passed)
+			{
+				if (maxTries == currentTries)
+					return default;
 
-            return generated;
-        }
+				generated = generator(currentTries);
+				passed = condition(generated);
+				currentTries++;
+			}
 
-        public static FileStream CreateIncrementalFile(string directoryPath, string fileName, Func<int, string>? generator = null, int start = 1, int step = 1, int maxTries = 1000)
-        {
-            if(!Directory.Exists(directoryPath))
-                throw new DirectoryNotFoundException(directoryPath);
+			return generated;
+		}
 
-            if(!File.Exists(Path.Combine(directoryPath, fileName)))
-                return File.Create(Path.Combine(directoryPath, fileName));
+		public static FileStream CreateIncrementalFile(string directoryPath, string fileName, Func<int, string> generator = null, int start = 1, int maxTries = 1000)
+		{
+			if (!Directory.Exists(directoryPath))
+				throw new DirectoryNotFoundException(directoryPath);
 
-            generator ??= GetFileName;
-            
-            string finalFileName = TryUntil(generator, s => !File.Exists(Path.Combine(directoryPath, s)), start, step, maxTries);
-            
-            if(string.IsNullOrEmpty(finalFileName))
-                throw new Exception("Maximum tries exceeded");
-            
-            return File.Create(Path.Combine(directoryPath, finalFileName));
-            
-            string GetFileName(int increment)
-            {
-                string name = Path.GetFileNameWithoutExtension(fileName);
-                string extension = Path.GetExtension(fileName);
+			if (!File.Exists(Path.Combine(directoryPath, fileName)))
+				return File.Create(Path.Combine(directoryPath, fileName));
 
-                return $"{name} {increment}{extension}";
-            } 
-        }
-        
-        public static FileStream CreateIncrementalFile(string fullPath, Func<int, string>? generator = null, int start = 1, int step = 1, int maxTries = 1000) => CreateIncrementalFile(Path.GetDirectoryName(fullPath), Path.GetFileName(fullPath), generator, start, step, maxTries);
-        
-    }
+			generator ??= GetFileName;
+
+			string finalFileName = TryUntil(generator, s => !File.Exists(Path.Combine(directoryPath, s)), start, maxTries);
+
+			if (string.IsNullOrEmpty(finalFileName))
+				throw new Exception("Maximum tries exceeded");
+
+			return File.Create(Path.Combine(directoryPath, finalFileName));
+
+			string GetFileName(int increment)
+			{
+				string name = Path.GetFileNameWithoutExtension(fileName);
+				string extension = Path.GetExtension(fileName);
+
+				return $"{name} {increment}{extension}";
+			}
+		}
+
+		public static FileStream CreateIncrementalFile(string fullPath, Func<int, string> generator = null, int start = 1, int maxTries = 1000) => CreateIncrementalFile(Path.GetDirectoryName(fullPath), Path.GetFileName(fullPath), generator, start, maxTries);
+	}
 }

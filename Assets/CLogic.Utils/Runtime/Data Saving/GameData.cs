@@ -29,7 +29,7 @@ namespace CLogic.Utils.DataSaving
                 return;
             if(!EnvUtils.EnvironmentSet)
             {
-                EnvUtils.onEnvironmentSet += UpdateSectionsInternal;
+                EnvUtils.OnEnvironmentSet += UpdateSectionsInternal;
                 return;
             }
             UpdateSectionsInternal();
@@ -57,7 +57,7 @@ namespace CLogic.Utils.DataSaving
                 OnDataInitialized?.Invoke();
             
             OnSectionsUpdated?.Invoke();
-            EnvUtils.onEnvironmentSet -= UpdateSectionsInternal;
+            EnvUtils.OnEnvironmentSet -= UpdateSectionsInternal;
             
         }
     }
