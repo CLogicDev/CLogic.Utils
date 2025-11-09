@@ -1,54 +1,54 @@
 ﻿using CLogic.Core.LifeCycles;
-using UnityEngine;
 using UnityEngine.SceneManagement;
-namespace CLogic.Utils
+
+namespace CLogic.Utils.ServiceSystem
 {
-    public class SceneLifeCycle : LifeCycle<SceneLifeCycle>
-    {
-        private bool sceneChanged = false;
-        public override bool IsAlive => !sceneChanged;
-        public SceneLifeCycle()
-        {
-            SceneManager.sceneUnloaded += SceneUnload;
+	public class SceneLifeCycle : LifeCycle<SceneLifeCycle>
+	{
+		private bool sceneChanged = false;
+		public override bool IsAlive => !sceneChanged;
+		public SceneLifeCycle()
+		{
+			SceneManager.sceneUnloaded += SceneUnload;
 
-            return;
+			return;
 
-            void SceneUnload(Scene _)
-            {
-                sceneChanged = true;
-                SceneManager.sceneUnloaded -= SceneUnload;
+			void SceneUnload(Scene _)
+			{
+				sceneChanged = true;
+				SceneManager.sceneUnloaded -= SceneUnload;
 
-                Services.CheckLifeCycle(Instance);
-                Instance = new SceneLifeCycle();
-            }
-        }
-    }
-    
-    public class UnitySingletonLifeCycle : LifeCycle<UnitySingletonLifeCycle>
-    {
-        public override bool IsAlive => !stateChanged;
-        private bool stateChanged = false;
+				Services.CheckLifeCycle(Instance);
+				Instance = new SceneLifeCycle();
+			}
+		}
+	}
 
-        #if UNITY_EDITOR
-        
-        public UnitySingletonLifeCycle()
-        {
-            UnityEditor.EditorApplication.playModeStateChanged += PlayModeStateChanged;
+	public class UnitySingletonLifeCycle : LifeCycle<UnitySingletonLifeCycle>
+	{
+		public override bool IsAlive => !stateChanged;
+		private bool stateChanged = false;
 
-            return;
+#if UNITY_EDITOR
 
-            void PlayModeStateChanged(UnityEditor.PlayModeStateChange stateChange)
-            {
-                if(stateChange == UnityEditor.PlayModeStateChange.EnteredPlayMode)
-                    return;
-                
-                stateChanged = true;
-            
-                Services.CheckLifeCycle(Instance);
+		public UnitySingletonLifeCycle()
+		{
+			UnityEditor.EditorApplication.playModeStateChanged += PlayModeStateChanged;
 
-                Instance = new UnitySingletonLifeCycle();
-            }
-        }
-        #endif
-    }
+			return;
+
+			void PlayModeStateChanged(UnityEditor.PlayModeStateChange stateChange)
+			{
+				if (stateChange == UnityEditor.PlayModeStateChange.EnteredPlayMode)
+					return;
+
+				stateChanged = true;
+
+				Services.CheckLifeCycle(Instance);
+
+				Instance = new UnitySingletonLifeCycle();
+			}
+		}
+#endif
+	}
 }

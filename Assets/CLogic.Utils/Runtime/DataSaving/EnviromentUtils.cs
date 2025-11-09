@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CLogic.Utils
 {
-	static class EnvUtils
+	internal static class EnviromentUtils
 	{
 		public static bool EnvironmentSet { get; private set; } = false;
 
@@ -17,7 +17,7 @@ namespace CLogic.Utils
 #if UNITY_EDITOR
 		[UnityEditor.InitializeOnLoadMethod]
 #endif
-		static void InjectEnvironmentVariables()
+		public static void InjectEnvironmentVariables()
 		{
 			Dictionary<string, string> environmentVariables = new()
 			{
