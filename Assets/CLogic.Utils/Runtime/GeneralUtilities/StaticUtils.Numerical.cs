@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CLogic.Utils
 {
-	public static class NumericalExtensions
+	public static partial class StaticUtils
 	{
 		/// <summary>
 		/// Checks if the value is in between two values
