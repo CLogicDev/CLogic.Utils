@@ -1,5 +1,6 @@
 ﻿using System;
 using CLogic.Utils.DataSaving;
+using CLogic.Utils.DataSaving.Sections;
 using UnityEngine;
 namespace CLogic.Utils.Runtime.DataSaving
 {
@@ -9,7 +10,8 @@ namespace CLogic.Utils.Runtime.DataSaving
         public string slotId;
 
         private string cachedSlotId;
-        
+
+        public bool autoSet;
         public bool editorSupport = true;
         
         private void Awake()
@@ -17,7 +19,18 @@ namespace CLogic.Utils.Runtime.DataSaving
             if(Application.isEditor && editorSupport)
                 UpdateSlot();   
         }
+
+        public void SetDefaultSlot()
+        {
+            slotId = DataSectionSettings.GetOrCreate().defaultSlot;
+            UpdateSlot();
+        }
         
+        public void SetSlot(string slotId)
+        {
+            this.slotId = slotId;
+            UpdateSlot();
+        }
         
         void UpdateSlot()
         {
@@ -44,7 +57,7 @@ namespace CLogic.Utils.Runtime.DataSaving
 
         private void OnValidate()
         {
-            if(cachedSlotId != slotId)
+            if(cachedSlotId != slotId && autoSet)
                 UpdateSlot();
         }
     }

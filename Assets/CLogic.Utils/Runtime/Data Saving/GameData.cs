@@ -43,9 +43,10 @@ namespace CLogic.Utils.DataSaving
             DataSectionSettings settings = DataSectionSettings.GetOrCreate();
             canUpdateSections = true;
             
-            //Setup slots
-            if(Environment.GetEnvironmentVariable(Slotter.ENVIRONMENT_VARIABLE_NAME) == null)
-                Environment.SetEnvironmentVariable(Slotter.ENVIRONMENT_VARIABLE_NAME, settings.defaultSlot);
+            //Ensure default slots from project settings
+            if(Slotter.CurrentSlotId == Slotter.defaultSlotId || Environment.GetEnvironmentVariable(Slotter.ENVIRONMENT_VARIABLE_NAME) == null)
+                Slotter.CurrentSlotId = settings.defaultSlot;
+            
             
             dataSections = settings.dataSections;
             
