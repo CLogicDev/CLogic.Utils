@@ -28,7 +28,7 @@ namespace CLogic.Utils.DataSaving.Sections
             
             Application.logMessageReceived += (msg, stack, type) =>
             {
-                if(type == LogType.Error && msg.Contains("Build failed"))
+                if(type == LogType.Error && (msg.Contains(nameof(BuildFailedException)) || msg.Contains("Build completed with a result of 'Failed'")))
                 {
                     new PostProcessDataSectionBuild().OnPostprocessBuild(null);
                 }
@@ -37,7 +37,7 @@ namespace CLogic.Utils.DataSaving.Sections
     }
 
     
-    class PostProcessDataSectionBuild : IPostprocessBuildWithReport//
+    class PostProcessDataSectionBuild : IPostprocessBuildWithReport
     {
         public int callbackOrder => int.MaxValue;
     

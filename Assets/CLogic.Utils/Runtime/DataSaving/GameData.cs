@@ -43,7 +43,7 @@ namespace CLogic.Utils.DataSaving
         private static void UpdateLookup()
         {
             sectionLookup.Clear();
-            foreach (BaseDataSectionSo section in dataSections)
+            foreach (BaseDataSectionSo section in dataSections.Where(s => s != null))
             {
                 sectionLookup.Add(section.GetSectionId(),  section);
             }
@@ -51,7 +51,9 @@ namespace CLogic.Utils.DataSaving
 
         private static void SetupAutoSave()
         {
+            #if UNITY_EDITOR
             EditorAutoSaver.SetActive(!Application.isPlaying && isAutoSaving); //No editor save while playing
+            #endif
 
             if(Application.isPlaying)
             {
@@ -92,7 +94,7 @@ namespace CLogic.Utils.DataSaving
             {
                 GameObject saver = new("Game Data Auto Saver");
                 autoSaver = saver.AddComponent<RuntimeAutoSaver>();
-                //saver.hideFlags = HideFlags.HideAndDontSave;
+                saver.hideFlags = HideFlags.HideAndDontSave;
             }
         }
         
