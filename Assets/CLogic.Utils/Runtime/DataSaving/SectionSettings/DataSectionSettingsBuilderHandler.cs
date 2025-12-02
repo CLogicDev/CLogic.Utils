@@ -25,10 +25,19 @@ namespace CLogic.Utils.DataSaving.Sections
 
             AssetDatabase.CopyAsset(assetPath, DataSectionSettings.SETTINGS_FILE_PATH);
             AssetDatabase.ImportAsset(DataSectionSettings.SETTINGS_FILE_PATH);
+            
+            Application.logMessageReceived += (msg, stack, type) =>
+            {
+                if(type == LogType.Error && msg.Contains("Build failed"))
+                {
+                    new PostProcessDataSectionBuild().OnPostprocessBuild(null);
+                }
+            };
         }
     }
+
     
-    class PostProcessDataSectionBuild : IPostprocessBuildWithReport
+    class PostProcessDataSectionBuild : IPostprocessBuildWithReport//
     {
         public int callbackOrder => int.MaxValue;
     

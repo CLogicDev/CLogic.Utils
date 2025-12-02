@@ -24,7 +24,7 @@ namespace CLogic.Utils.DataSaving.Sections
             UnityEditor.AssetDatabase.CreateAsset(cache, "Assets/DataSectionSettings.asset");
             UnityEditor.AssetDatabase.SaveAssets();
                     
-            UnityEditor.EditorBuildSettings.AddConfigObject(KEY, cache, true);
+            UnityEditor.EditorBuildSettings.AddConfigObject(KEY, cache, true);//
             
         #else    
             cache = Resources.Load<DataSectionSettings>(Path.GetFileNameWithoutExtension(SETTINGS_FILE_PATH));

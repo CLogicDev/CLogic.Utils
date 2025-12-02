@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataSections:
   - {fileID: 11400000, guid: 9fd45a56c43045143a9240d5cf1fa199, type: 2}
+  - {fileID: 11400000, guid: aa3e48882e474e84db5d545b5aae6d93, type: 2}
+  defaultSlot: Default

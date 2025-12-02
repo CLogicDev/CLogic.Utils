@@ -7,11 +7,20 @@ using CLogic.Utils.Runtime.DataSaving.Obfuscator;
 
 namespace CLogic.Utils.DataSaving.Sections
 {
+	public enum SavingMode
+	{
+		Manual,
+		Instant,
+		Dirty
+	}
+	
 	public abstract class BaseDataSectionSo : ScriptableObject, IDataSection
 	{
 		public abstract IDataObfuscator GetObfuscator();
 		public abstract IDataPath GetDataPath();
 		public abstract string GetSectionId();
+
+		public SavingMode savingMode;
 	}
 
 	public class PersistentPath : IDataPath
