@@ -1,0 +1,106 @@
+﻿using System;
+using System.Collections;
+using JetBrains.Annotations;
+using TMPro;
+using UnityEngine;
+namespace CLogic.Utils.UI
+{
+    public class TypeWriter : MonoBehaviour
+    {
+        public TextMeshProUGUI textDisplay;
+
+        [TextArea]
+        public string textToWrite;
+
+        [TextArea]
+        public string startText;
+
+        [Header("Settings")]
+        public float speedWordsPerMin = 120f;
+        public bool autoStart = true;
+        public bool delayEmptySpace = true;
+
+        private Coroutine writingCoroutine;
+        private Action currentFinishCallback;
+        private string currentTargetText;
+        
+        private void Start()
+        {
+            if(autoStart)
+                StartWriting();
+        }
+
+        #region QOL Access
+        
+        public void StopWriting() => StopWriting(false, false);
+        public void SkipAnimation() => StopWriting(true, true);
+        
+        public void StartWriting() => StartWriting(null);
+        public void StartWriting(Action finishCallback) => StartWriting(textToWrite, speedWordsPerMin, finishCallback, startText, delayEmptySpace);
+        public void StartWriting(string text, float wordsPerMin, Action finishCallback) => StartWriting(text, wordsPerMin, finishCallback, null, true);
+        
+        #endregion
+        
+        public void StartWriting(string text, float wordsPerMin, Action finishCallback, [CanBeNull] string startText, bool delayEmptySpace)
+        {
+            if(writingCoroutine != null)
+                StopCoroutine(writingCoroutine);
+            
+            currentFinishCallback = finishCallback;
+            currentTargetText = text;
+            writingCoroutine = StartCoroutine(WriterCoroutine(text, wordsPerMin, finishCallback, startText, delayEmptySpace));
+        }
+        
+        public void StopWriting(bool finishText, bool invokeCallbacks)
+        {
+            if(finishText)
+                textDisplay.text = currentTargetText;
+            
+            if(invokeCallbacks)
+                currentFinishCallback?.Invoke();
+        }
+
+        private IEnumerator WriterCoroutine(string text, float wordsPerMinute, Action finishCallback = null, [CanBeNull] string startText = null, bool delayEmptySpace = true)
+        {
+            string currentText = startText ?? string.Empty;
+
+            if(startText != null)
+                text = text.TrimStart(startText.ToCharArray());
+            
+            float secondsPerCharacter = 60 / (wordsPerMinute * 5);
+            bool isWritingTag = false;
+            
+            
+            foreach (char c in text)
+            {
+                // ReSharper disable once ReplaceWithSingleAssignment.True
+                bool shouldDelayCharacter = true;
+                
+                if(c == '<' && !delayEmptySpace)
+                    shouldDelayCharacter = false;
+                
+                if(c == '<')
+                {
+                    isWritingTag = true;
+                }
+                else if(isWritingTag && c == '>')
+                {
+                    isWritingTag = false;
+                }
+                
+                currentText += c;
+                textDisplay.text = currentText;
+                
+                if(shouldDelayCharacter && !isWritingTag)
+                    yield return new WaitForSeconds(secondsPerCharacter);
+            }
+
+            finishCallback?.Invoke();
+        }
+
+        private void Reset()
+        {
+            textDisplay = GetComponent<TextMeshProUGUI>();
+        }
+    }
+}
