@@ -10,7 +10,7 @@ namespace CLogic.Utils.DataSaving
 {
     public static class GameData
     {
-        public static DataSaver DataSaver { [Obsolete] get; private set; }
+        internal static DataSaver DataSaver { get; private set; }
         
         public static List<BaseDataSectionSo> dataSections = new();
         
