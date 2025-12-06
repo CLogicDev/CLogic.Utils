@@ -134,8 +134,10 @@ namespace CLogic.Utils.DataSaving
             DataSaver = new DataSaver(saveSections);
 
             UpdateLookup();
-            AutoSaveDirtySections = true;
-            autoSaveInterval = TimeSpan.FromSeconds(5);
+            
+            //Setup autosave from project settings
+            AutoSaveDirtySections = settings.doAutoSave;
+            autoSaveInterval = TimeSpan.FromSeconds(settings.autoSaveDelaySeconds);
             
             if(isFirstInit)
                 OnDataInitialized?.Invoke();
@@ -338,7 +340,7 @@ namespace CLogic.Utils.DataSaving
                     break;
             }
             
-            return;//
+            return;
 
             void SaveDirtyWrapper()
             {
@@ -361,6 +363,9 @@ namespace CLogic.Utils.DataSaving
 
         public static void Update()
         {
+            if(!isActive)
+                return;
+            
             double now = UnityEditor.EditorApplication.timeSinceStartup;
             if(now - lastSaveTime >= GameData.autoSaveInterval.TotalSeconds)
                 SaveDirty(now);

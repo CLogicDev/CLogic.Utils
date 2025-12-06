@@ -15,3 +15,5 @@ MonoBehaviour:
   dataSections:
   - {fileID: 11400000, guid: 9fd45a56c43045143a9240d5cf1fa199, type: 2}
   defaultSlot: Default
+  doAutoSave: 1
+  autoSaveDelaySeconds: 5

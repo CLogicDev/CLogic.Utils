@@ -10,9 +10,8 @@ namespace CLogic.Utils.DataSaving.Sections
         
         public List<BaseDataSectionSo> dataSections = new();
         public string defaultSlot = "Default";
-
-        private static DataSectionSettings cache;
-
+        public bool doAutoSave;
+        public double autoSaveDelaySeconds = GameData.autoSaveInterval.TotalSeconds;
         
         private void OnValidate()
         {
