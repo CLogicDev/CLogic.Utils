@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CLogic.Core.DataSaving;
-using CLogic.Core.LifeCycles;
 using CLogic.Utils.DataSaving.Sections;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -16,8 +15,9 @@ namespace CLogic.Utils.DataSaving
         
         private static Dictionary<string, BaseDataSectionSo> sectionLookup = new();
         
-        public static List<PersistentDataContainer> dirtyContainers  = new();
-
+        public static HashSet<PersistentDataContainer> dirtyContainers  = new();
+        private static HashSet<string> pausedDirty = new();
+        
         public static bool IsInitialized => DataSaver != null;
 
         private static bool canUpdateSections = true;
@@ -152,8 +152,61 @@ namespace CLogic.Utils.DataSaving
             
             dirtyContainers.Clear();
         }
+
+        public static void PauseDirty(string sectionId)
+        {
+            dirtyContainers.Remove(GetDataContainer(sectionId));
+            
+            pausedDirty.Add(sectionId);
+        }
+
+        public static void ResumeDirty(string sectionId)
+        {
+            pausedDirty.Remove(sectionId);
+        }
+
+        public static void SaveSection(string sectionId, bool removeAsDirty = true) => SaveSection(GetDataContainer(sectionId), removeAsDirty);
         
-        private static bool HandleDirtyCheck(string sectionId, bool? shouldUpdate, out PersistentDataContainer dataContainer)
+        public static void SaveSection(PersistentDataContainer dataContainer, bool removeAsDirty = true)
+        {
+            dataContainer.SaveToDisk();
+            
+            if(removeAsDirty)
+                dirtyContainers.Remove(dataContainer);
+        }
+        
+        public static void SaveSectionIfDirty(string sectionId, bool removeAsDirty = true) => SaveSectionIfDirty(GetDataContainer(sectionId), removeAsDirty);
+        
+        public static void SaveSectionIfDirty(PersistentDataContainer dataContainer, bool removeAsDirty = true)
+        {
+            if(!dirtyContainers.Contains(dataContainer))
+                return;
+            
+            dataContainer.SaveToDisk();
+            
+            if(removeAsDirty)
+                dirtyContainers.Remove(dataContainer);
+        }
+
+        public static bool MakeDirty(string sectionId, bool forced = false)
+        {
+            PersistentDataContainer dataContainer = GetDataContainer(sectionId);
+            if(forced)
+            {
+                dirtyContainers.Add(dataContainer);
+                return true;
+            }
+            
+            BaseDataSectionSo section = sectionLookup[sectionId];
+            if(section.savingMode != SavingMode.Dirty || pausedDirty.Contains(section.GetSectionId()))
+                return false;
+            
+            dirtyContainers.Add(dataContainer);
+            return true;
+
+        }
+
+        private static bool HandleDirtyCheck(string sectionId, bool? shouldUpdate)
         {
             BaseDataSectionSo section = sectionLookup[sectionId];
 
@@ -165,12 +218,7 @@ namespace CLogic.Utils.DataSaving
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            dataContainer = GetDataContainer(sectionId);
-            
-            if(section.savingMode == SavingMode.Dirty)
-            {
-                dirtyContainers.Add(dataContainer);
-            }
+            MakeDirty(sectionId);
             
             return shouldUpdate.Value;
         }
@@ -185,8 +233,8 @@ namespace CLogic.Utils.DataSaving
 
         public static void SetData(string id, object data, string sectionId, bool? shouldUpdate = null)
         {
-            bool updateData = HandleDirtyCheck(sectionId, shouldUpdate, out PersistentDataContainer dataContainer);
-            dataContainer.SetData(id, data, updateData);
+            bool updateData = HandleDirtyCheck(sectionId, shouldUpdate);
+            GetDataContainer(sectionId).SetData(id, data, updateData);
         }
         
         public static T GetData<T>(string id, string sectionId, T defaultValue = default) => DataSaver.GetData<T>(id, sectionId, defaultValue);
@@ -210,8 +258,8 @@ namespace CLogic.Utils.DataSaving
 
         public static void ClearSectionData(string sectionId, bool? shouldUpdate = null)
         {
-            bool updateData = HandleDirtyCheck(sectionId, shouldUpdate, out PersistentDataContainer dataContainer);
-            dataContainer.ClearData(updateData);
+            bool updateData = HandleDirtyCheck(sectionId, shouldUpdate);
+            GetDataContainer(sectionId).ClearData(updateData);
         }
         
         
