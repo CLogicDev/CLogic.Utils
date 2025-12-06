@@ -120,7 +120,7 @@ namespace CLogic.Utils.DataSaving
             bool isFirstInit = DataSaver == null;
             
             canUpdateSections = false; // Prevents updating section twice due to OnValidate
-            DataSectionSettings settings = DataSectionSettings.GetOrCreate();
+            DataSectionSettings settings = DataSectionSettings.GetOrCreateSettings();
             canUpdateSections = true;
             
             //Ensure default slots from project settings

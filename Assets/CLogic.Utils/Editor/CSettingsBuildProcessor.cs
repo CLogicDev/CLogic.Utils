@@ -12,7 +12,8 @@ namespace CLogic.Utils.Settings
 {
     public class CSettingsPreProcessor : IPreprocessBuildWithReport
     {
-        internal const string RESOURCE_FOLDER_DIR = "Assets/Resources";
+        internal const string RESOURCES_FOLDER_DIR = "Assets/" + RESOURCES_FOLDER_NAME;
+        internal const string RESOURCES_FOLDER_NAME = "Resources";
         public int callbackOrder => 0;
 
         internal static List<string> buildPaths = new();
@@ -22,6 +23,10 @@ namespace CLogic.Utils.Settings
             List<Type> settingTypes = GetSettingsToProcess();
             buildPaths = new List<string>(settingTypes.Count);
 
+            
+            if(settingTypes.Count != 0 && !Directory.Exists(RESOURCES_FOLDER_DIR))
+                AssetDatabase.CreateFolder("Assets", RESOURCES_FOLDER_NAME);
+            
             AssetDatabase.StartAssetEditing();
             try
             {
@@ -44,29 +49,34 @@ namespace CLogic.Utils.Settings
             {
                 new CSettingsPostProcessor().DiscardBuildResources();
             }
+
+            if(type == LogType.Log && msg.Contains("Cancelled"))
+            {
+                new CSettingsPostProcessor().DiscardBuildResources();
+            }
             
             Application.logMessageReceived -= HandleLogFailMessage;
         }
 
         public void ProcessType(Type type)
         { 
+            Debug.Log("[CLogic Build Processor] Processing " + type.FullName);
             //No graceful error handling, Unity will fail the build on error
-            var GetOrCreateMethod = type.GetMethod("GetOrCreateSettings", BindingFlags.Static | BindingFlags.Public);
-            var GetAssetName = type.GetProperty(nameof(TestSettingSo.AssetName), BindingFlags.Static);
+            var GetOrCreateMethod = type.GetMethod("GetOrCreateSettings", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+            var GetAssetName = type.GetProperty("AssetName", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Public);
+
+            ScriptableObject asset = (ScriptableObject)GetOrCreateMethod.Invoke(null, null);
+            string assetPath = AssetDatabase.GetAssetPath(asset);
+            string assetName = (string)GetAssetName.GetValue(asset);
             
-            string assetPath = AssetDatabase.GetAssetPath((ScriptableObject)GetOrCreateMethod.Invoke(null, null));
-            string assetName = (string)GetAssetName.GetValue(null);
-            
-            ScriptableObject asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
             if(asset == null)
                 throw new BuildFailedException($"[CLogic Build Processor] Missing asset file for {type.FullName}");
-            
-            if(!Directory.Exists(RESOURCE_FOLDER_DIR))
-                Directory.CreateDirectory(RESOURCE_FOLDER_DIR);
 
-            string temporaryBuildPath = Path.Combine(RESOURCE_FOLDER_DIR, assetName);
+            string temporaryBuildPath = Path.Combine(RESOURCES_FOLDER_DIR, assetName);
             AssetDatabase.CopyAsset(assetPath, temporaryBuildPath);
             AssetDatabase.ImportAsset(temporaryBuildPath);
+            
+            buildPaths.Add(temporaryBuildPath);
         }
         
         public List<Type> GetSettingsToProcess()
@@ -91,24 +101,20 @@ namespace CLogic.Utils.Settings
 
         public void DiscardBuildResources()
         {
-            AssetDatabase.StartAssetEditing();
-            try
+            foreach (string buildPath in CSettingsPreProcessor.buildPaths)
             {
-                foreach (string buildPath in CSettingsPreProcessor.buildPaths)
-                {
-                    AssetDatabase.DeleteAsset(buildPath);
-                }
+                Debug.Log("[CLogic Build Processor] Processing post build for asset at" + buildPath);
+                AssetDatabase.DeleteAsset(buildPath);
+            }
 
-                if(Directory.GetFileSystemEntries(CSettingsPreProcessor.RESOURCE_FOLDER_DIR).Length != 0)
-                    return;
-                // Delete resources folder after use if it was not created previously
-                AssetDatabase.DeleteAsset(CSettingsPreProcessor.RESOURCE_FOLDER_DIR);
-                Debug.Log("[CLogic Build Processor] Deleted empty Resources folder");
-            }
-            finally
-            {
-                AssetDatabase.StopAssetEditing();
-            }
+            if(!Directory.Exists(CSettingsPreProcessor.RESOURCES_FOLDER_DIR)) //On Unity 6000, test runner automatically deletes the resources folder
+                return;
+            
+            if(Directory.GetFileSystemEntries(Path.GetFullPath(CSettingsPreProcessor.RESOURCES_FOLDER_DIR)).Length != 0)
+                return;
+            // Delete resources folder after use if it was not created previously
+            AssetDatabase.DeleteAsset(CSettingsPreProcessor.RESOURCES_FOLDER_DIR);
+            Debug.Log("[CLogic Build Processor] Deleted empty Resources folder");
         }
     }
 }

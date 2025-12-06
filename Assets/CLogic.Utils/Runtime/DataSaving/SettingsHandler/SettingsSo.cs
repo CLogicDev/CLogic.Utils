@@ -2,37 +2,46 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-namespace CLogic.Utils.DataSaving.Sections
+namespace CLogic.Utils.Settings
 {
     public abstract class SettingsSo<T> : ScriptableObject where T : SettingsSo<T>
     {
-        private const string BUILD_PATH = "Assets/Resources";
         private const string DEFAULT_CREATION_PATH = "Assets";
 
-        protected internal static string AssetName { get; set; }
+        protected internal abstract string AssetName { get; set; }
         
-        protected static string Key { get; set; }
+        protected abstract string Key { get; set; }
 
         protected static T settingsCache;
         
         public static T GetOrCreateSettings()
         {
+            T instance = CreateInstance<T>();
             #if UNITY_EDITOR
-            if(settingsCache != null || UnityEditor.EditorBuildSettings.TryGetConfigObject(Key, out settingsCache))
-                return settingsCache;
 
-            settingsCache = CreateInstance<T>();
-            
-            string creationPath = Path.Combine(DEFAULT_CREATION_PATH, AssetName);
+            if(settingsCache != null || UnityEditor.EditorBuildSettings.TryGetConfigObject(instance.Key, out settingsCache))
+            {
+                DestroyImmediate(instance);
+                return settingsCache;
+            }
+
+            settingsCache = instance;
+
+            string creationPath = Path.Combine(DEFAULT_CREATION_PATH, instance.AssetName);
             UnityEditor.AssetDatabase.CreateAsset(settingsCache,creationPath);
             UnityEditor.AssetDatabase.SaveAssets();
             UnityEditor.AssetDatabase.Refresh();
             
-            UnityEditor.EditorBuildSettings.AddConfigObject(Key, settingsCache, true);
+            UnityEditor.EditorBuildSettings.AddConfigObject(instance.Key, settingsCache, true);
             
             #else
-            settingsCache = Resources.Load<T>(Path.Combine(BUILD_PATH, AssetName));
+            Debug.LogWarning(instance.AssetName);
+            settingsCache = Resources.Load<T>(Path.GetFileNameWithoutExtension(instance.AssetName));
+            DestroyImmediate(instance);
             #endif
+            
+            if(settingsCache != null)
+                Debug.LogWarning("Asset exists");
             
             return settingsCache;
         }

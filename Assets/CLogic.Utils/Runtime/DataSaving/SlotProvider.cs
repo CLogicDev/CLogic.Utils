@@ -24,7 +24,7 @@ namespace CLogic.Utils.Runtime.DataSaving
 
 		public void SetDefaultSlot()
 		{
-			slotId = DataSectionSettings.GetOrCreate().defaultSlot;
+			slotId = DataSectionSettings.GetOrCreateSettings().defaultSlot;
 			UpdateSlot();
 		}
 
