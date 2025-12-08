@@ -17,9 +17,17 @@ namespace CLogic.Utils.DataSaving.Sections
                     
                     SerializedObject so = new (settings);
                     EditorGUILayout.PropertyField(so.FindProperty(nameof(DataSectionSettings.dataSections)), true);
+                    EditorGUILayout.PropertyField(so.FindProperty(nameof(DataSectionSettings.defaultSection)), true);
+                    
                     EditorGUILayout.PropertyField(so.FindProperty(nameof(DataSectionSettings.defaultSlot)), true);
+
+                    //Header
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("Auto Saving", EditorStyles.boldLabel);
                     EditorGUILayout.PropertyField(so.FindProperty(nameof(DataSectionSettings.doAutoSave)), true);
                     EditorGUILayout.PropertyField(so.FindProperty(nameof(DataSectionSettings.autoSaveDelaySeconds)), true);
+                    
+                    
                     so.ApplyModifiedProperties();
 
                     if (GUI.changed)

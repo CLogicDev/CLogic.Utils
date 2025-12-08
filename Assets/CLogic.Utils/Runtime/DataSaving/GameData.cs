@@ -128,9 +128,18 @@ namespace CLogic.Utils.DataSaving
                 Slotter.CurrentSlotId = settings.defaultSlot;
             
             
-            dataSections = settings.dataSections;
-            
-            List<IDataSection> saveSections = new (settings.dataSections.Where(s => s != null));
+            dataSections = new(settings.dataSections);
+
+            //Setup default section
+            DataSectionSo defaultSection = ScriptableObject.CreateInstance<DataSectionSo>();
+            defaultSection.savingMode = settings.defaultSection.savingMode;
+            defaultSection.sectionId = settings.defaultSection.sectionId;
+            defaultSection.fileName = settings.defaultSection.fileName;
+            defaultSection.relativePath = settings.defaultSection.relativePath;
+            defaultSection.obfuscator = settings.defaultSection.obfuscator;
+
+            dataSections.Add(defaultSection);
+            List<IDataSection> saveSections = new(dataSections.Where(s => s != null));
             DataSaver = new DataSaver(saveSections);
 
             UpdateLookup();

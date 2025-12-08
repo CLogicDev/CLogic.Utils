@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 983012a1a3c94985ae2ad79ae168f124, type: 3}
   m_Name: Slotted Section
   m_EditorClassIdentifier: 
-  sectionId: default
+  savingMode: 1
+  sectionId: default_slotted
   relativePath: '%PERSISTENT_DATA%/CLogic/Slots/Slot %SLOT_ID%'
   fileName: game_data.json
   obfuscator: {fileID: 0}

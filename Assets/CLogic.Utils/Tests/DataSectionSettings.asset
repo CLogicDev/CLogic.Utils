@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: CLogic.Runtime.Utils.DataSaving::CLogic.Utils.DataSaving.Sections.DataSectionSettings
   dataSections:
   - {fileID: 11400000, guid: 9fd45a56c43045143a9240d5cf1fa199, type: 2}
+  defaultSection:
+    savingMode: 1
+    relativePath: '%PERSISTENT_DATA%'
+    fileName: default.bin
+    obfuscator: {fileID: 0}
   defaultSlot: Default
   doAutoSave: 1
   autoSaveDelaySeconds: 5
