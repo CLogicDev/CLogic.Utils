@@ -13,12 +13,11 @@ namespace CLogic.Utils.Logger
                 label = "Logger Settings",
                 guiHandler = (searchContext) =>
                 {
-                    EditorGUILayout.HelpBox("No settings available yet.", MessageType.Info);
-                    
-                    LoggerSettings settings = LoggerSettings.GetOrCreate();
+                    LoggerSettings settings = LoggerSettings.GetOrCreateSettings();
                     
                     SerializedObject so = new (settings);
                     EditorGUILayout.PropertyField(so.FindProperty(nameof(LoggerSettings.logColors)), true);
+                    EditorGUILayout.PropertyField(so.FindProperty(nameof(LoggerSettings.logFilePath)), true);
                     so.ApplyModifiedProperties();
 
                     if (GUI.changed)

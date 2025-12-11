@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-namespace CLogic.Utils.Settings
+namespace CLogic.Utils.Shared
 {
     public abstract class SettingsSo<T> : ScriptableObject where T : SettingsSo<T>
     {
         private const string DEFAULT_CREATION_PATH = "Assets";
 
-        protected internal abstract string AssetName { get; set; }
+        protected abstract string AssetName { get; set; }
         
         protected abstract string Key { get; set; }
 
@@ -39,9 +39,6 @@ namespace CLogic.Utils.Settings
             settingsCache = Resources.Load<T>(Path.GetFileNameWithoutExtension(instance.AssetName));
             DestroyImmediate(instance);
             #endif
-            
-            if(settingsCache != null)
-                Debug.LogWarning("Asset exists");
             
             return settingsCache;
         }

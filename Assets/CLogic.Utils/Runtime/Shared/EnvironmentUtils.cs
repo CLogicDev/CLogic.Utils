@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace CLogic.Utils
+namespace CLogic.Utils.Shared
 {
 	public static class EnvironmentUtils
 	{

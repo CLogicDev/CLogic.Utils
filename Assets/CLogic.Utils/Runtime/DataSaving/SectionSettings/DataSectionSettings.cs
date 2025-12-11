@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CLogic.Utils.Runtime.DataSaving.Obfuscator;
-using CLogic.Utils.Settings;
+using CLogic.Utils.Shared;
 namespace CLogic.Utils.DataSaving.Sections
 {
     [Serializable]
@@ -21,7 +21,7 @@ namespace CLogic.Utils.DataSaving.Sections
     public class DataSectionSettings : SettingsSo<DataSectionSettings>
     {
         internal const string KEY = "dev.clogic.datasections";
-        protected internal override string AssetName { get; set; } = "DataSectionSettings.asset";
+        protected override string AssetName { get; set; } = "DataSectionSettings.asset";
         protected override string Key { get; set; } = KEY;
         
         public List<BaseDataSectionSo> dataSections = new();

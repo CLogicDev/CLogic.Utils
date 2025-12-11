@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CLogic.Utils.Shared;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -45,7 +46,7 @@ namespace CLogic.Utils.Logger
         
         internal static void UpdateSettings()
         {
-            LoggerSettings settings = LoggerSettings.GetOrCreate();
+            LoggerSettings settings = LoggerSettings.GetOrCreateSettings();
             
             logColors.Clear();
             logColors.Add(LogLevel.Debug, settings.logColors.debug);

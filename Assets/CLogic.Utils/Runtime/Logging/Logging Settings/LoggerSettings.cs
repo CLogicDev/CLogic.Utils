@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using CLogic.Utils.Shared;
 using UnityEngine;
 namespace CLogic.Utils.Logger
 {
-    public class LoggerSettings : ScriptableObject
+    public class LoggerSettings : SettingsSo<LoggerSettings>
     {
-        internal const string SETTINGS_FILE_PATH = "Assets/Resources/LoggerSettings.asset";
         internal const string KEY = "dev.clogic.logger";
+
+        protected override string AssetName { get; set; } = "LoggerSettings.asset";
+        protected override string Key { get; set; } = KEY;
         
-        private static LoggerSettings cache;
         
         [Serializable]
         public class LogColors
@@ -24,30 +26,5 @@ namespace CLogic.Utils.Logger
         public LogColors logColors = new ();
 
         public string logFilePath = "%PERSISTENT_DATA%/Logs/log.txt";
-        
-        public static LoggerSettings GetOrCreate()
-        {
-        #if UNITY_EDITOR
-            if(cache != null || UnityEditor.EditorBuildSettings.TryGetConfigObject(KEY, out cache))
-                return cache;
-
-            cache = CreateInstance<LoggerSettings>();
-            UnityEditor.AssetDatabase.CreateAsset(cache, "Assets/LoggerSettings.asset");
-            UnityEditor.AssetDatabase.SaveAssets();
-                    
-            UnityEditor.EditorBuildSettings.AddConfigObject(KEY, cache, true);
-            
-        #else    
-            cache = Resources.Load<LoggerSettings>(Path.GetFileNameWithoutExtension(SETTINGS_FILE_PATH));
-        #endif
-
-            
-            return cache;
-        }
-
-        private void OnValidate()
-        {
-            Logging.UpdateSettings();
-        }
     }
 }
