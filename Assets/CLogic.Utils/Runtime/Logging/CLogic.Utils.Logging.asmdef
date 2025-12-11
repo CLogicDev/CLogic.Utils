@@ -1,0 +1,16 @@
+{
+    "name": "CLogic.Utils.Logging",
+    "rootNamespace": "",
+    "references": [
+        "GUID:196666413224b2044bb088a5508b5f51"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

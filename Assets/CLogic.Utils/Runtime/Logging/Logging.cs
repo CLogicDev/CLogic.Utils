@@ -36,10 +36,10 @@ namespace CLogic.Utils.Logger
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Setup()
         {
-            if(EnvUtils.EnvironmentSet)
+            if(EnvironmentUtils.EnvironmentSet)
                 UpdateSettings();
             else
-                EnvUtils.onEnvironmentSet += UpdateSettings;
+                EnvironmentUtils.OnEnvironmentSet += UpdateSettings;
         }
 
         
