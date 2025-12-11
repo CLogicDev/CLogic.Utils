@@ -61,9 +61,15 @@ namespace CLogic.Utils.Logger
             OnLogSetup?.Invoke();
         }
         
+        // QOL Access
+        public static void Log(string message, LogLevel level) => Log(message, level, null, true, true);
+        public static void Log(string message, LogLevel level, Object context) => Log(message, level, context, true, true);
+        
         [IgnoreStackTrace]
-        public static void Log(string message, LogLevel level, Object context, bool doFileLog, bool doConsoleLog)
+        public static void Log(string message, LogLevel level, Object context, bool doFileLog, bool doConsoleLog, bool? showStackTrace = null)
         {
+            showStackTrace ??= level >= LogLevel.Error;
+            
             StringBuilder builder = new();
             builder.AppendLine(message);
 
@@ -72,7 +78,7 @@ namespace CLogic.Utils.Logger
             if(doFileLog)
             {
                 StringBuilder fileLogBuilder = new(builder.ToString());
-                if(level >= LogLevel.Error)
+                if(showStackTrace.Value)
                 {
                     string trace = StackTraceUtils.GetFilteredStackTrace();
                     string indentedTrace = string.Join("\n", trace.Split("\n").Select(line => "    " + line.TrimEnd()));
@@ -80,6 +86,8 @@ namespace CLogic.Utils.Logger
                     fileLogBuilder.Append(indentedTrace);
                 }
 
+                string timestamp = $"[{DateTime.Now:g}] ";
+                fileLogBuilder.Insert(0, timestamp);
                 FileLog(fileLogBuilder.ToString()); // File log should not include coloring
             }
 
@@ -92,8 +100,6 @@ namespace CLogic.Utils.Logger
             }
         }
         
-        public static void Log(string message, LogLevel level) => Log(message, level, null, true, true);
-        public static void Log(string message, LogLevel level, Object context) => Log(message, level, context, true, true);
 
         private static string GetLogColor(LogLevel level)
         {
