@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using CLogic.Utils.Shared;
 using UnityEngine;
+using CompressionLevel = System.IO.Compression.CompressionLevel;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 namespace CLogic.Utils.Logger
@@ -38,9 +40,15 @@ namespace CLogic.Utils.Logger
         private static void Setup()
         {
             if(EnvironmentUtils.EnvironmentSet)
+            {
                 UpdateSettings();
+                SetupFileLogger();
+            }
             else
+            {
                 EnvironmentUtils.OnEnvironmentSet += UpdateSettings;
+                EnvironmentUtils.OnEnvironmentSet += SetupFileLogger;
+            }
         }
 
         
@@ -167,6 +175,32 @@ namespace CLogic.Utils.Logger
                 Directory.CreateDirectory(dirName);
 
             return File.Open(logFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        }
+
+        private static void SetupFileLogger()
+        {
+            string dirName = Path.GetDirectoryName(logFilePath);
+
+            if(!Directory.Exists(dirName))
+                return;
+            
+            if(!File.Exists(logFilePath))
+                return;
+
+            string zipFileName = Path.Combine(dirName, $"{DateTime.Now.ToString("d").Replace('/', '-')}.zip");
+            if(File.Exists(zipFileName))
+            {
+                zipFileName = StaticUtils.TryUntil(i => Path.Combine(dirName, $"{DateTime.Now.ToString("d").Replace('/', '-')}-{i}.zip"), s => !File.Exists(s), 1);
+                if(zipFileName == null)
+                    throw new IndexOutOfRangeException("Could not create a non duplicate zip file");
+            }
+
+            using FileStream zip = new (Path.Combine(dirName, zipFileName), FileMode.Create);
+            using ZipArchive archive = new(zip, ZipArchiveMode.Create);
+            
+            archive.CreateEntryFromFile(logFilePath,Path.GetFileName(logFilePath), CompressionLevel.Optimal);
+            
+            File.Delete(logFilePath);
         }
     }
     

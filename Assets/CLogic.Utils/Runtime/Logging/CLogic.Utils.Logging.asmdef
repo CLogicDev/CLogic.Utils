@@ -2,7 +2,8 @@
     "name": "CLogic.Utils.Logging",
     "rootNamespace": "",
     "references": [
-        "GUID:452e796ae00dde247b9cc0b3415946e7"
+        "GUID:452e796ae00dde247b9cc0b3415946e7",
+        "GUID:6ac5d8d0653b8a74b809112608cbc455"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
