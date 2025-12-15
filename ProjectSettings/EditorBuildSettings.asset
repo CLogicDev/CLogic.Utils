@@ -18,4 +18,5 @@ EditorBuildSettings:
     com.unity.addressableassets: {fileID: 11400000, guid: 6ee41fd40a9fad3489cdd4c0bfcd0d94, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     dev.clogic.datasections: {fileID: 11400000, guid: 90cd6d4423b8d93428ddea6b2a50301a, type: 2}
+    dev.clogic.logger: {fileID: 11400000, guid: 3b619bc5d15bbd14fbc7deaafb19b993, type: 2}
   m_UseUCBPForAssetBundles: 0

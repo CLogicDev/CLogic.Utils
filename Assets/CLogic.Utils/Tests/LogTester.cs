@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using CLogic.Utils.Logger;
+﻿using CLogic.Utils.Logger;
 using UnityEngine;
 namespace CLogic.Utils.Tests
 {
@@ -8,30 +6,12 @@ namespace CLogic.Utils.Tests
     {
         public string msg = "something els";
         public LogLevel level;
+        public ULogger logger = new("Log Tester");
 
-        private FileStream fs;
-        private void Update()
+        [ContextMenu("Log")]
+        public void LogMsg()
         {
-            if(Input.GetKeyDown(KeyCode.Space))
-                DoLog();
-        }
-
-        void DoLog()
-        {
-            Logging.Log(msg, level);
-            //Debug.Log(msg);
-        }
-
-        [ContextMenu("Open")]
-        void OpenFile()
-        {
-            fs = File.Open(Logging.logFilePath, FileMode.Open);
-        }
-        
-        [ContextMenu("Close")]
-        void CloseFile()
-        {
-            fs.Close();;
+            logger.Log(msg);
         }
     }
 }

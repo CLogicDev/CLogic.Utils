@@ -62,12 +62,20 @@ namespace CLogic.Utils.Logger
         }
         
         // QOL Access
+        [IgnoreStackTrace, HideInCallstack]
         public static void Log(string message, LogLevel level) => Log(message, level, null, true, true);
+        [IgnoreStackTrace, HideInCallstack]
         public static void Log(string message, LogLevel level, Object context) => Log(message, level, context, true, true);
         
-        [IgnoreStackTrace]
+        [IgnoreStackTrace, HideInCallstack]
         public static void Log(string message, LogLevel level, Object context, bool doFileLog, bool doConsoleLog, bool? showStackTrace = null)
         {
+            if(!LogSetup)
+            {
+                OnLogSetup += () => Log(message, level, context, doFileLog, doConsoleLog, showStackTrace);
+                return;
+            }
+            
             showStackTrace ??= level >= LogLevel.Error;
             
             StringBuilder builder = new();
