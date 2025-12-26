@@ -71,7 +71,7 @@ namespace CLogic.Utils
     #if UNITY_EDITOR
     internal class DelayCallerEditor : IDelayCaller
     {
-        internal DelayScheduler scheduler = new();
+        private DelayScheduler scheduler = new();
 
         public DelayCallerEditor()
         {
@@ -97,7 +97,7 @@ namespace CLogic.Utils
     #endif
     internal class DelayScheduler
     {
-        public List<DelayHandle> pendingActions = new();
+        private List<DelayHandle> pendingActions = new();
         
         public void AddDelay(DelayHandle delay)
         {
