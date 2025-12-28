@@ -6,15 +6,16 @@ namespace CLogic.Utils
     public class Countdown
     {
         [field: SerializeField]
+        public double TargetDuration { get; protected set; }
+        
+        [field: SerializeField]
         public double TimeLeftSeconds { get; set; }
-
-        public double CurrentTargetTime { get; protected set; }
-
+        
         public virtual bool IsActive {get; protected set;}
         
         public virtual bool IsFinished => TimeLeftSeconds <= 0;
 
-        public virtual float PercentageCompletion => Mathf.InverseLerp((float)CurrentTargetTime, 0,  (float)TimeLeftSeconds);
+        public virtual float PercentageCompletion => Mathf.InverseLerp((float)TargetDuration, 0,  (float)TimeLeftSeconds);
         
         public Action OnComplete;
 
@@ -29,7 +30,7 @@ namespace CLogic.Utils
         {
             IsActive = true;
             TimeLeftSeconds = targetTime;
-            CurrentTargetTime = targetTime;
+            TargetDuration = targetTime;
         }
 
         public virtual void AddTargetTime(double targetTime)
@@ -53,6 +54,13 @@ namespace CLogic.Utils
             }
         }
 
+        public virtual void Start() => Reset();
+        
+        public virtual void Reset()
+        {
+            SetTargetTime(TargetDuration);
+        }
+        
         public static implicit operator bool(Countdown t)
         {
             return t.IsActive && t.IsFinished;
