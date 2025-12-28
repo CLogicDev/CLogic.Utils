@@ -13,7 +13,7 @@ namespace CLogic.Utils
 
         public override bool IsFinished => TimeLeftSeconds <= MinimumTime;
         
-        public override float PercentageCompletion => Mathf.InverseLerp((float)CurrentTargetTime, (float)MinimumTime,  (float)TimeLeftSeconds);
+        public override float PercentageCompletion => Mathf.InverseLerp((float)TargetDuration, (float)MinimumTime,  (float)TimeLeftSeconds);
 
         public override void Tick(double timeSinceLastFrameSeconds)
         {
@@ -39,7 +39,7 @@ namespace CLogic.Utils
             
             IsActive = true;
             TimeLeftSeconds = targetTime;
-            CurrentTargetTime = targetTime;
+            TargetDuration = targetTime;
         }
     }
 }

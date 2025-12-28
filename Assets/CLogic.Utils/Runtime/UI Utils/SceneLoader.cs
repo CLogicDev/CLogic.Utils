@@ -2,15 +2,18 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 namespace CLogic.Utils.UI
 {
     public class SceneLoader : MonoBehaviour
     {
         public GraphicsFader graphicsFader;
-
-        public float startDelay;
-        public float fadeInDuration = 1f;
-        public float fadeOutDuration = 1f;
+        public Slider loadingBar;
+        
+        public Countdown fadeIn;
+        public Countdown fadeOut;
+        public Countdown loadingBarDisplay;
+        public Countdown loadDelay;
         
         public bool IsLoading {get; private set;}
         public Action OnLoadingStart;
@@ -26,7 +29,7 @@ namespace CLogic.Utils.UI
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.I))
-                LoadSceneAsync(1);
+                LoadSceneAsync(0);
         }
 
         private Coroutine loadingCoroutine;
@@ -50,23 +53,45 @@ namespace CLogic.Utils.UI
         {
             OnLoadingStart?.Invoke();
 
-            float fadeInProgress = 0;
-            while (fadeInProgress < fadeInDuration)
+            fadeIn.Start();
+            graphicsFader.gameObject.SetActive(true);
+            while (!fadeIn.IsFinished)
             {
-                fadeInProgress += Time.deltaTime;
-                graphicsFader.SetAlpha(Mathf.Lerp(0, 1, fadeInProgress / fadeInDuration));
+                fadeIn.Tick(Time.deltaTime);
+                graphicsFader.SetAlpha(fadeIn.PercentageCompletion);
                 yield return null;
             }
+            
+            loadingBarDisplay.Start();
+            loadingBarDisplay.OnComplete += () =>
+            {
+                loadingBar.gameObject.SetActive(true);
+            };
             
             AsyncOperation operation = SceneManager.LoadSceneAsync(scene.buildIndex, parameters);
             
-            while (operation.progress <= 0.9)
+            loadDelay.Start();
+            loadDelay.OnComplete += () => operation.allowSceneActivation = true;
+            while (operation.progress <= 0.9 || !loadDelay.IsFinished)
             {
+                loadingBarDisplay.Tick(Time.deltaTime);
+                loadDelay.Tick(Time.deltaTime);
                 OnLoadingProgress?.Invoke(operation.progress);
+
+                loadingBar.value = operation.progress / 0.9f;
+                
                 yield return null;
             }
             
-            
+            fadeOut.Start();
+            while (!fadeOut.IsFinished)
+            {
+                fadeOut.Tick(Time.deltaTime);
+                graphicsFader.SetAlpha(1f - fadeOut.PercentageCompletion);
+                yield return null;
+            }
+            graphicsFader.gameObject.SetActive(false);
+            loadingBar.gameObject.SetActive(false);
             
             OnLoadingComplete?.Invoke();
         }
