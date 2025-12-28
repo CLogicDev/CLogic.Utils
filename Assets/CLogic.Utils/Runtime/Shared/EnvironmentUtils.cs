@@ -2,9 +2,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace CLogic.Utils
+namespace CLogic.Utils.Shared
 {
-	internal static class EnviromentUtils
+	public static class EnvironmentUtils
 	{
 		public static bool EnvironmentSet { get; private set; } = false;
 

@@ -20,7 +20,7 @@ namespace CLogic.Utils.DataSaving.Sections
 		public abstract IDataPath GetDataPath();
 		public abstract string GetSectionId();
 
-		public SavingMode savingMode;
+		public SavingMode savingMode = SavingMode.Instant;
 	}
 
 	public class PersistentPath : IDataPath

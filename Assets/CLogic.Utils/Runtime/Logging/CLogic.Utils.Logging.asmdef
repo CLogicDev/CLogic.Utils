@@ -1,10 +1,9 @@
 {
-    "name": "CLogic.Runtime.Utils.DataSaving",
-    "rootNamespace": "CLogic.Utils.DataSaving",
+    "name": "CLogic.Utils.Logging",
+    "rootNamespace": "",
     "references": [
-        "GUID:18e444a6db19f1443abb7f71f386f519",
-        "GUID:4e174f5af2240d34ba34c35e0fb9ce0f",
-        "GUID:452e796ae00dde247b9cc0b3415946e7"
+        "GUID:452e796ae00dde247b9cc0b3415946e7",
+        "GUID:6ac5d8d0653b8a74b809112608cbc455"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

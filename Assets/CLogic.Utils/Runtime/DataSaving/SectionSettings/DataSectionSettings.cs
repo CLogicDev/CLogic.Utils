@@ -1,39 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
+using CLogic.Utils.Runtime.DataSaving.Obfuscator;
+using CLogic.Utils.Shared;
 namespace CLogic.Utils.DataSaving.Sections
 {
-    public class DataSectionSettings : ScriptableObject
+    [Serializable]
+    public class DefaultSection
     {
-        internal const string SETTINGS_FILE_PATH = "Assets/Resources/DataSectionSettings.asset";
+        [NonSerialized]
+        public string sectionId = "default";
+
+        public SavingMode savingMode = SavingMode.Instant;
+
+        public string relativePath = "%PERSISTENT_DATA%";
+        public string fileName = "default.bin";
+
+        public ObfuscatorSo obfuscator;
+    }
+    
+    public class DataSectionSettings : SettingsSo<DataSectionSettings>
+    {
         internal const string KEY = "dev.clogic.datasections";
-
+        protected override string AssetName { get; set; } = "DataSectionSettings.asset";
+        protected override string Key { get; set; } = KEY;
+        
         public List<BaseDataSectionSo> dataSections = new();
+
+        public DefaultSection defaultSection = new();
+        
         public string defaultSlot = "Default";
-
-        private static DataSectionSettings cache;
-
-        public static DataSectionSettings GetOrCreate()
-        {
-        #if UNITY_EDITOR
-            if(cache != null || UnityEditor.EditorBuildSettings.TryGetConfigObject(KEY, out cache))
-                return cache;
-
-            cache = CreateInstance<DataSectionSettings>();
-            UnityEditor.AssetDatabase.CreateAsset(cache, "Assets/DataSectionSettings.asset");
-            UnityEditor.AssetDatabase.SaveAssets();
-                    
-            UnityEditor.EditorBuildSettings.AddConfigObject(KEY, cache, true);//
-            
-        #else    
-            cache = Resources.Load<DataSectionSettings>(Path.GetFileNameWithoutExtension(SETTINGS_FILE_PATH));
-        #endif
-
-            
-            return cache;
-        }
-
+        public bool doAutoSave;
+        public double autoSaveDelaySeconds = GameData.autoSaveInterval.TotalSeconds;
+        
+        
         private void OnValidate()
         {
             GameData.UpdateSections();

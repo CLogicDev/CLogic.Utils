@@ -11,8 +11,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 742ad5f35faa43e286c3fc65e5bcaf78, type: 3}
   m_Name: DataSectionSettings
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: CLogic.Runtime.Utils.DataSaving::CLogic.Utils.DataSaving.Sections.DataSectionSettings
   dataSections:
   - {fileID: 11400000, guid: 9fd45a56c43045143a9240d5cf1fa199, type: 2}
-  - {fileID: 11400000, guid: aa3e48882e474e84db5d545b5aae6d93, type: 2}
+  defaultSection:
+    savingMode: 1
+    relativePath: '%PERSISTENT_DATA%'
+    fileName: default.bin
+    obfuscator: {fileID: 0}
   defaultSlot: Default
+  doAutoSave: 1
+  autoSaveDelaySeconds: 5
