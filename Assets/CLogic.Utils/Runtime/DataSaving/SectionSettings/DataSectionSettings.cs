@@ -15,6 +15,8 @@ namespace CLogic.Utils.DataSaving.Sections
         public string relativePath = "%PERSISTENT_DATA%";
         public string fileName = "default.bin";
 
+        public bool allowHumanEdits = true;
+        
         public ObfuscatorSo obfuscator;
     }
     

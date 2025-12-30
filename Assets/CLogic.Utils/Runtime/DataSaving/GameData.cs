@@ -136,6 +136,7 @@ namespace CLogic.Utils.DataSaving
             defaultSection.savingMode = settings.defaultSection.savingMode;
             defaultSection.sectionId = settings.defaultSection.sectionId;
             defaultSection.fileName = settings.defaultSection.fileName;
+            defaultSection.AllowHumanEdits = settings.defaultSection.allowHumanEdits;
             defaultSection.relativePath = settings.defaultSection.relativePath;
             defaultSection.obfuscator = settings.defaultSection.obfuscator;
 

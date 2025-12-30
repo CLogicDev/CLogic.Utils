@@ -19,6 +19,7 @@ namespace CLogic.Utils.DataSaving.Sections
 		public abstract IDataObfuscator GetObfuscator();
 		public abstract IDataPath GetDataPath();
 		public abstract string GetSectionId();
+		public abstract bool AllowHumanEdits { get; set; }
 
 		public SavingMode savingMode = SavingMode.Instant;
 	}
@@ -44,6 +45,9 @@ namespace CLogic.Utils.DataSaving.Sections
 		public string relativePath;
 		public string fileName;
 
+		[field: SerializeField]
+		public override bool AllowHumanEdits { get; set; } = true;
+		
 		public ObfuscatorSo obfuscator;
 
 		private readonly PersistentPath persistentPath = new();
@@ -69,5 +73,6 @@ namespace CLogic.Utils.DataSaving.Sections
 			return obfuscator == null ? new StringObfuscator() : obfuscator;
 		}
 		public override string GetSectionId() => sectionId;
+		
 	}
 }

@@ -27,7 +27,6 @@ namespace CLogic.Utils.DataSaving.Sections
                     EditorGUILayout.PropertyField(so.FindProperty(nameof(DataSectionSettings.doAutoSave)), true);
                     EditorGUILayout.PropertyField(so.FindProperty(nameof(DataSectionSettings.autoSaveDelaySeconds)), true);
                     
-                    
                     so.ApplyModifiedProperties();
 
                     if (GUI.changed)
