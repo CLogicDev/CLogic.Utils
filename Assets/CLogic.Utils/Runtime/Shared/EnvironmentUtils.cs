@@ -10,9 +10,6 @@ namespace CLogic.Utils.Shared
 
 		public static event Action OnEnvironmentSet;
 
-		/// <summary>
-		/// Adds some useful environment variables for the saving system
-		/// </summary>
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 #if UNITY_EDITOR
 		[UnityEditor.InitializeOnLoadMethod]

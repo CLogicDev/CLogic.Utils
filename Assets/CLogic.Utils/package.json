@@ -1,6 +1,6 @@
 {
   "name": "dev.clogic.utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "displayName": "CLogic Utils",
   "description": "A global utility package for Unity by the CLogic team.",
   "unity": "2019.1",
@@ -10,13 +10,12 @@
     "dev.clogic.core": "v0.0.1"
   },
   "keywords": [
-    "keyword1",
-    "keyword2",
-    "keyword3"
+    "CLogic",
+    "Utils"
   ],
   "author": {
     "name": "CLogic",
-    "email": "management@clogic.dev",
+    "email": "contact@clogic.dev",
     "url": "https://clogic.dev"
   }
 }

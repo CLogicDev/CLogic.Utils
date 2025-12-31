@@ -18,6 +18,7 @@ MonoBehaviour:
     savingMode: 1
     relativePath: '%PERSISTENT_DATA%'
     fileName: default.bin
+    allowHumanEdits: 1
     obfuscator: {fileID: 0}
   defaultSlot: Default
   doAutoSave: 1
