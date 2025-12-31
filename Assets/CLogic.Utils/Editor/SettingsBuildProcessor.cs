@@ -16,7 +16,10 @@ namespace CLogic.Utils.Settings
         internal const string RESOURCES_FOLDER_NAME = "Resources";
         public int callbackOrder => 0;
 
+#pragma warning disable UDR0001 
+        //Reset on the post processor
         internal static List<string> buildPaths = new();
+#pragma warning restore UDR0001
         
         public void OnPreprocessBuild(BuildReport report)
         {
@@ -40,7 +43,9 @@ namespace CLogic.Utils.Settings
                 AssetDatabase.StopAssetEditing();
             }
 
+#pragma warning disable UDR0005
             Application.logMessageReceived += HandleLogFailMessage;
+#pragma warning restore UDR0005
         }
 
         void HandleLogFailMessage(string msg, string _, LogType type)
@@ -87,11 +92,15 @@ namespace CLogic.Utils.Settings
                 .Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(SettingsSo<>))
                 .ToList();
         }
+
+        ~SettingsPreProcessor()
+        {
+            Application.logMessageReceived -= HandleLogFailMessage;
+        }
     }
 
     class SettingsPostProcessor : IPostprocessBuildWithReport
     {
-
         public int callbackOrder => int.MaxValue;
         
         public void OnPostprocessBuild(BuildReport report)
@@ -106,6 +115,8 @@ namespace CLogic.Utils.Settings
                 Debug.Log("[CLogic Build Processor] Processing post build for asset at" + buildPath);
                 AssetDatabase.DeleteAsset(buildPath);
             }
+            
+            SettingsPreProcessor.buildPaths.Clear();
 
             if(!Directory.Exists(SettingsPreProcessor.RESOURCES_FOLDER_DIR)) //On Unity 6000, test runner automatically deletes the resources folder
                 return;
