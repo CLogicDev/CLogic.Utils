@@ -63,15 +63,26 @@ namespace CLogic.Utils.UI
             }
             
             loadingBarDisplay.Start();
-            loadingBarDisplay.OnComplete += () =>
+
+            Action showLoadingBar = null;
+            showLoadingBar = () =>
             {
                 loadingBar.gameObject.SetActive(true);
+                loadingBarDisplay.OnComplete -= showLoadingBar;
             };
+            loadingBarDisplay.OnComplete += showLoadingBar;
             
             AsyncOperation operation = SceneManager.LoadSceneAsync(scene.buildIndex, parameters);
             
             loadDelay.Start();
-            loadDelay.OnComplete += () => operation.allowSceneActivation = true;
+            Action allowSceneActivation = null;
+            allowSceneActivation = () =>
+            {
+                operation.allowSceneActivation = true;
+                loadDelay.OnComplete -= allowSceneActivation;
+            };
+            loadDelay.OnComplete += allowSceneActivation;
+            
             while (operation.progress <= 0.9 || !loadDelay.IsFinished)
             {
                 loadingBarDisplay.Tick(Time.deltaTime);
