@@ -10,13 +10,16 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 namespace CLogic.Utils.Settings
 {
-    public class CSettingsPreProcessor : IPreprocessBuildWithReport
+    public class SettingsPreProcessor : IPreprocessBuildWithReport
     {
         internal const string RESOURCES_FOLDER_DIR = "Assets/" + RESOURCES_FOLDER_NAME;
         internal const string RESOURCES_FOLDER_NAME = "Resources";
         public int callbackOrder => 0;
 
+#pragma warning disable UDR0001 
+        //Reset on the post processor
         internal static List<string> buildPaths = new();
+#pragma warning restore UDR0001
         
         public void OnPreprocessBuild(BuildReport report)
         {
@@ -40,19 +43,21 @@ namespace CLogic.Utils.Settings
                 AssetDatabase.StopAssetEditing();
             }
 
+#pragma warning disable UDR0005
             Application.logMessageReceived += HandleLogFailMessage;
+#pragma warning restore UDR0005
         }
 
         void HandleLogFailMessage(string msg, string _, LogType type)
         {
             if(type == LogType.Error && (msg.Contains(nameof(BuildFailedException)) || msg.Contains("Build completed with a result of 'Failed'")))
             {
-                new CSettingsPostProcessor().DiscardBuildResources();
+                new SettingsPostProcessor().DiscardBuildResources();
             }
 
             if(type == LogType.Log && msg.Contains("Cancelled"))
             {
-                new CSettingsPostProcessor().DiscardBuildResources();
+                new SettingsPostProcessor().DiscardBuildResources();
             }
             
             Application.logMessageReceived -= HandleLogFailMessage;
@@ -87,11 +92,15 @@ namespace CLogic.Utils.Settings
                 .Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(SettingsSo<>))
                 .ToList();
         }
+
+        ~SettingsPreProcessor()
+        {
+            Application.logMessageReceived -= HandleLogFailMessage;
+        }
     }
 
-    class CSettingsPostProcessor : IPostprocessBuildWithReport
+    class SettingsPostProcessor : IPostprocessBuildWithReport
     {
-
         public int callbackOrder => int.MaxValue;
         
         public void OnPostprocessBuild(BuildReport report)
@@ -101,19 +110,21 @@ namespace CLogic.Utils.Settings
 
         public void DiscardBuildResources()
         {
-            foreach (string buildPath in CSettingsPreProcessor.buildPaths)
+            foreach (string buildPath in SettingsPreProcessor.buildPaths)
             {
                 Debug.Log("[CLogic Build Processor] Processing post build for asset at" + buildPath);
                 AssetDatabase.DeleteAsset(buildPath);
             }
+            
+            SettingsPreProcessor.buildPaths.Clear();
 
-            if(!Directory.Exists(CSettingsPreProcessor.RESOURCES_FOLDER_DIR)) //On Unity 6000, test runner automatically deletes the resources folder
+            if(!Directory.Exists(SettingsPreProcessor.RESOURCES_FOLDER_DIR)) //On Unity 6000, test runner automatically deletes the resources folder
                 return;
             
-            if(Directory.GetFileSystemEntries(Path.GetFullPath(CSettingsPreProcessor.RESOURCES_FOLDER_DIR)).Length != 0)
+            if(Directory.GetFileSystemEntries(Path.GetFullPath(SettingsPreProcessor.RESOURCES_FOLDER_DIR)).Length != 0)
                 return;
             // Delete resources folder after use if it was not created previously
-            AssetDatabase.DeleteAsset(CSettingsPreProcessor.RESOURCES_FOLDER_DIR);
+            AssetDatabase.DeleteAsset(SettingsPreProcessor.RESOURCES_FOLDER_DIR);
             Debug.Log("[CLogic Build Processor] Deleted empty Resources folder");
         }
     }
