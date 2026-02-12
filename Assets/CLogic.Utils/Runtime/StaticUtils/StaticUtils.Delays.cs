@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using CLogic.Utils.Shared;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 namespace CLogic.Utils
 {
+    class CLogicDelays {}
     public partial class StaticUtils
     {
         private static IDelayCaller delayCaller;
@@ -22,10 +25,8 @@ namespace CLogic.Utils
             {
                 if(delayCaller is DelayCallerRuntime)
                     return;
-                
-                GameObject caller = new("Delay Caller");
-                delayCaller = caller.AddComponent<DelayCallerRuntime>();
-                caller.hideFlags = HideFlags.HideAndDontSave;
+
+                delayCaller = new DelayCallerRuntime();
             }
             #if UNITY_EDITOR
             else
@@ -53,10 +54,15 @@ namespace CLogic.Utils
         public void AddDelay(Action callback, float delaySeconds);
     }
     
-    internal class DelayCallerRuntime : MonoBehaviour, IDelayCaller
+    internal class DelayCallerRuntime : IDelayCaller
     {
         internal DelayScheduler scheduler = new();
 
+        public DelayCallerRuntime()
+        {
+            PlayerLoopInterface.InsertSystemBefore(typeof(DelayCallerRuntime), Update, typeof(Update.ScriptRunBehaviourUpdate));
+        }
+        
         public void AddDelay(Action callback, float delaySeconds)
         {
             scheduler.AddDelay(new DelayHandle(callback, Time.realtimeSinceStartupAsDouble + delaySeconds));
