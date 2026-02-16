@@ -35,26 +35,18 @@ namespace CLogic.Utils.UI
 
         private Coroutine loadingCoroutine;
         
-        public void LoadSceneAsync(string sceneName) => LoadSceneAsync(sceneName, new LoadSceneParameters(LoadSceneMode.Single));
-        public void LoadSceneAsync(string sceneName, LoadSceneParameters parameters) => LoadSceneAsync(SceneManager.GetSceneByName(sceneName), parameters);
-        
         public void LoadSceneAsync(int buildIndex) => LoadSceneAsync(buildIndex, new LoadSceneParameters(LoadSceneMode.Single));
-        public void LoadSceneAsync(int buildIndex, LoadSceneParameters parameters)
-        {
-            string scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
-            LoadSceneAsync(Path.GetFileNameWithoutExtension(scenePath), parameters); //No API to get scene objecy by build id
-        }
 
-        public void LoadSceneAsync(Scene scene, LoadSceneParameters parameters)
+        public void LoadSceneAsync(int buildIndex, LoadSceneParameters parameters)
         {
             if(IsLoading)
                 return;
             
             IsLoading = true;
-            loadingCoroutine = StartCoroutine(LoadSceneCoroutine(scene, parameters));
+            loadingCoroutine = StartCoroutine(LoadSceneCoroutine(buildIndex, parameters));
         }
 
-        private IEnumerator LoadSceneCoroutine(Scene scene, LoadSceneParameters parameters)
+        private IEnumerator LoadSceneCoroutine(int buildIndex, LoadSceneParameters parameters)
         {
             OnLoadingStart?.Invoke();
 
@@ -77,7 +69,7 @@ namespace CLogic.Utils.UI
             };
             loadingBarDisplay.OnComplete += showLoadingBar;
             
-            AsyncOperation operation = SceneManager.LoadSceneAsync(scene.buildIndex, parameters);
+            AsyncOperation operation = SceneManager.LoadSceneAsync(buildIndex, parameters);
             
             loadDelay.Start();
             Action allowSceneActivation = null;
