@@ -10,9 +10,14 @@ namespace CLogic.Utils
     {
         private static IDelayCaller delayCaller;
         
-        public static void ExecuteDelayed(Action action, float delaySeconds)
+        public static DelayHandle ExecuteDelayed(Action action, float delaySeconds)
         {
-            delayCaller.AddDelay(action, delaySeconds);
+            return delayCaller.AddDelay(action, delaySeconds);
+        }
+
+        public static bool CancelDelay(DelayHandle handle)
+        {
+            return delayCaller.RemoveDelay(handle);
         }
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -51,7 +56,9 @@ namespace CLogic.Utils
 
     internal interface IDelayCaller
     {
-        public void AddDelay(Action callback, float delaySeconds);
+        public DelayHandle AddDelay(Action callback, float delaySeconds);
+        
+        public bool RemoveDelay(DelayHandle handle);
     }
     
     internal class DelayCallerRuntime : IDelayCaller
@@ -63,11 +70,18 @@ namespace CLogic.Utils
             PlayerLoopInterface.InsertSystemBefore(typeof(DelayCallerRuntime), Update, typeof(Update.ScriptRunBehaviourUpdate));
         }
         
-        public void AddDelay(Action callback, float delaySeconds)
+        public DelayHandle AddDelay(Action callback, float delaySeconds)
         {
-            scheduler.AddDelay(new DelayHandle(callback, Time.realtimeSinceStartupAsDouble + delaySeconds));
+            var handle = new DelayHandle(callback, Time.realtimeSinceStartupAsDouble + delaySeconds);
+            scheduler.AddDelay(handle);
+
+            return handle;
         }
-        
+        public bool RemoveDelay(DelayHandle handle)
+        {
+            return scheduler.RemoveDelay(handle);
+        }
+
         private void Update()
         {
             scheduler.CheckDelays(Time.realtimeSinceStartupAsDouble);
@@ -84,11 +98,18 @@ namespace CLogic.Utils
             UnityEditor.EditorApplication.update += Update;
         }
         
-        public void AddDelay(Action callback, float delaySeconds)
+        public DelayHandle AddDelay(Action callback, float delaySeconds)
         {
-            scheduler.AddDelay(new DelayHandle(callback, UnityEditor.EditorApplication.timeSinceStartup + delaySeconds));
+            var handle = new DelayHandle(callback, UnityEditor.EditorApplication.timeSinceStartup + delaySeconds);
+            scheduler.AddDelay(handle);
+            
+            return  handle;
         }
-        
+        public bool RemoveDelay(DelayHandle handle)
+        {
+            return scheduler.RemoveDelay(handle);
+        }
+
         private void Update()
         {
             scheduler.CheckDelays(UnityEditor.EditorApplication.timeSinceStartup);
@@ -119,6 +140,8 @@ namespace CLogic.Utils
 
             pendingActions.Add(delay);
         }
+        
+        public bool RemoveDelay(DelayHandle handle) => pendingActions.Remove(handle);
 
         public void CheckDelays(double currentTime)
         {
