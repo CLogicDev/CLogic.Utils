@@ -39,7 +39,7 @@ namespace CLogic.Utils.UI
         public void StopWriting() => StopWriting(false, false);
         public void SkipAnimation() => StopWriting(true, true);
         
-        public void StartWriting() => StartWriting(null);
+        public void StartWriting() => StartWriting(textToWrite);
         public void StartWriting(string text, Action finishCallback = null) => StartWriting(text, speedWordsPerMin, finishCallback, startText, delayEmptySpace);
         public void StartWriting(string text, float wordsPerMin, Action finishCallback) => StartWriting(text, wordsPerMin, finishCallback, null, true);
         
