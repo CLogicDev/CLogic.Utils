@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace CLogic.Utils
 {
@@ -127,6 +129,61 @@ namespace CLogic.Utils
 			Vector3 randomPoint = barycentricCoord1 * vertex1 + barycentricCoord2 * vertex2 + barycentricCoord3 * vertex3;
 
 			return meshCollider.transform.TransformPoint(randomPoint);
+		}
+		
+		[Serializable]
+		public struct WeightedNumber
+		{
+			/// <summary>
+			/// The number that will be returned
+			/// </summary>
+			public int number;
+
+			/// <summary>
+			/// The probability of that number to be returned
+			/// </summary>
+			public float probability;
+
+			public WeightedNumber(int number, float probability)
+			{
+				this.number = number;
+				this.probability = probability;
+			}
+		}
+		
+		/// <summary>
+		/// Returns a number based on a probability
+		/// </summary>
+		/// <param name="weightedNumbers">The numbers and probabilities</param>
+		/// <returns></returns>
+		public static int WeightedRandom(params WeightedNumber[] weightedNumbers)
+		{
+			//Get total probability
+			float totalProbability = 0;
+			foreach (var number in weightedNumbers)
+			{
+				totalProbability += number.probability;
+			}
+
+			//Normalize probabilities
+			for (int i = 0; i < weightedNumbers.Length; i++)
+			{
+				weightedNumbers[i].probability /= totalProbability;
+			}
+
+			float randomPoint = Random.value;
+			for (int i = 0; i < weightedNumbers.Length; i++)
+			{
+				if (randomPoint < weightedNumbers[i].probability)
+				{
+					return weightedNumbers[i].number;
+				}
+				else
+				{
+					randomPoint -= weightedNumbers[i].probability;
+				}
+			}
+			return weightedNumbers[^1].number;
 		}
 	}
 }
