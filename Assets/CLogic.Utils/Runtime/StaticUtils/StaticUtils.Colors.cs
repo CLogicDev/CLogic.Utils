@@ -106,5 +106,17 @@ namespace CLogic.Utils
         /// </summary>
         /// <returns>'Color32' implicitly casted to 'Color'</returns>
         public static Color ToColor(this Color32 color) => color;
+        
+        /// <summary>
+        /// Converts a hexadecimal color to an RGB(A) color
+        /// </summary>
+        /// <param name="hex">The hexadecimal color to convert</param>
+        /// <returns></returns>
+        public static Color ColorFromHex(string hex)
+        {
+            ColorUtility.TryParseHtmlString(hex.StartsWith('#') ? hex : '#' + hex, out Color result);
+
+            return result;
+        }
     }
 }
