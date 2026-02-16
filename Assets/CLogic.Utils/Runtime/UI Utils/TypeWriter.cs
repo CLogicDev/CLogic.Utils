@@ -25,6 +25,8 @@ namespace CLogic.Utils.UI
         private Coroutine writingCoroutine;
         private Action currentFinishCallback;
         private string currentTargetText;
+
+        public Action onWritingFinished;
         
         private void Start()
         {
@@ -57,9 +59,12 @@ namespace CLogic.Utils.UI
         {
             if(finishText)
                 textDisplay.text = currentTargetText;
-            
+
             if(invokeCallbacks)
+            {
                 currentFinishCallback?.Invoke();
+                onWritingFinished?.Invoke();
+            }
 
             IsWriting = false;
         }
@@ -101,6 +106,7 @@ namespace CLogic.Utils.UI
             }
 
             finishCallback?.Invoke();
+            onWritingFinished?.Invoke();
             IsWriting = false;
         }
 
