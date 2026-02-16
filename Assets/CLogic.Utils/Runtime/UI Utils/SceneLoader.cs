@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -38,8 +39,12 @@ namespace CLogic.Utils.UI
         public void LoadSceneAsync(string sceneName, LoadSceneParameters parameters) => LoadSceneAsync(SceneManager.GetSceneByName(sceneName), parameters);
         
         public void LoadSceneAsync(int buildIndex) => LoadSceneAsync(buildIndex, new LoadSceneParameters(LoadSceneMode.Single));
-        public void LoadSceneAsync(int buildIndex, LoadSceneParameters parameters) => LoadSceneAsync(SceneManager.GetSceneAt(buildIndex), parameters);
-        
+        public void LoadSceneAsync(int buildIndex, LoadSceneParameters parameters)
+        {
+            string scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+            LoadSceneAsync(Path.GetFileNameWithoutExtension(scenePath), parameters); //No API to get scene objecy by build id
+        }
+
         public void LoadSceneAsync(Scene scene, LoadSceneParameters parameters)
         {
             if(IsLoading)
