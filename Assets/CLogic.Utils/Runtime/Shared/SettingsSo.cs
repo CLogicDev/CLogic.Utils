@@ -27,6 +27,8 @@ namespace CLogic.Utils.Shared
 
             settingsCache = instance;
 
+            instance.OnSettingsCreated();
+            
             string creationPath = Path.Combine(DEFAULT_CREATION_PATH, instance.AssetName);
             UnityEditor.AssetDatabase.CreateAsset(settingsCache,creationPath);
             UnityEditor.AssetDatabase.SaveAssets();
@@ -42,5 +44,7 @@ namespace CLogic.Utils.Shared
             
             return settingsCache;
         }
+
+        protected virtual void OnSettingsCreated() {}
     }
 }
