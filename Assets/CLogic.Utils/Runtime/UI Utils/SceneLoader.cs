@@ -38,7 +38,7 @@ namespace CLogic.Utils.UI
         public void LoadSceneAsync(string sceneName, LoadSceneParameters parameters) => LoadSceneAsync(SceneManager.GetSceneByName(sceneName), parameters);
         
         public void LoadSceneAsync(int buildIndex) => LoadSceneAsync(buildIndex, new LoadSceneParameters(LoadSceneMode.Single));
-        public void LoadSceneAsync(int buildIndex, LoadSceneParameters parameters) => LoadSceneAsync(SceneManager.GetSceneByBuildIndex(buildIndex), parameters);
+        public void LoadSceneAsync(int buildIndex, LoadSceneParameters parameters) => LoadSceneAsync(SceneManager.GetSceneAt(buildIndex), parameters);
         
         public void LoadSceneAsync(Scene scene, LoadSceneParameters parameters)
         {
