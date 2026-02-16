@@ -74,7 +74,7 @@ namespace CLogic.Utils.UI
             IsWriting = true;
             string currentText = startText ?? string.Empty;
 
-            if(startText != null)
+            if(!string.IsNullOrEmpty(startText))
                 text = text.TrimStart(startText.ToCharArray());
             
             float secondsPerCharacter = 60 / (wordsPerMinute * 5);
