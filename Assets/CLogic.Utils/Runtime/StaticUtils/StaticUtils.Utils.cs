@@ -104,6 +104,21 @@ namespace CLogic.Utils
 
 			return generated;
 		}
+		
+		/// <summary>
+		/// Moves a UI element to the mouse position
+		/// </summary>
+		/// <param name="transform">The RectTransform to move</param>
+		/// <param name="canvas">The canvas the RectTransform is part of</param>
+		/// <param name="mousePosition">The position of the mouse</param>
+		/// <param name="offset">Offset of the final position</param>
+		public static void MoveUIToMouse(Transform transform, Canvas canvas, Vector2 mousePosition, Vector2 offset)
+		{
+			RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, mousePosition, canvas.worldCamera, out Vector2 movePos);
+
+			transform.position = canvas.transform.TransformPoint(movePos + offset);
+		}
+
 
 		public static FileStream CreateIncrementalFile(string directoryPath, string fileName, Func<int, string> generator = null, int start = 1, int maxTries = 1000)
 		{
