@@ -20,6 +20,8 @@ namespace CLogic.Utils.UI
         public bool autoStart = true;
         public bool delayEmptySpace = true;
 
+        public bool IsWriting { get; private set; } = false;
+
         private Coroutine writingCoroutine;
         private Action currentFinishCallback;
         private string currentTargetText;
@@ -58,10 +60,13 @@ namespace CLogic.Utils.UI
             
             if(invokeCallbacks)
                 currentFinishCallback?.Invoke();
+
+            IsWriting = false;
         }
 
         private IEnumerator WriterCoroutine(string text, float wordsPerMinute, Action finishCallback = null, [CanBeNull] string startText = null, bool delayEmptySpace = true)
         {
+            IsWriting = true;
             string currentText = startText ?? string.Empty;
 
             if(startText != null)
@@ -96,6 +101,7 @@ namespace CLogic.Utils.UI
             }
 
             finishCallback?.Invoke();
+            IsWriting = false;
         }
 
         private void Reset()
