@@ -27,12 +27,6 @@ namespace CLogic.Utils.UI
             DontDestroyOnLoad(gameObject);
         }
 
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.I))
-                LoadSceneAsync(0);
-        }
-
         private Coroutine loadingCoroutine;
         
         public void LoadSceneAsync(int buildIndex) => LoadSceneAsync(buildIndex, new LoadSceneParameters(LoadSceneMode.Single));
