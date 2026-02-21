@@ -8,6 +8,33 @@ namespace CLogic.Utils.UI
 {
     public class SceneLoader : MonoBehaviour
     {
+        private struct Loader
+        {
+            public int? buildIndex;
+            public string sceneName;
+
+            public LoadSceneParameters sceneParameters;
+            
+            public Loader(int buildIndex, LoadSceneParameters sceneParameters)
+            {
+                this.buildIndex = buildIndex;
+                this.sceneParameters = sceneParameters;
+                sceneName = null;
+            }
+
+            public Loader(string sceneName, LoadSceneParameters sceneParameters)
+            {
+                this.sceneName = sceneName;
+                this.sceneParameters = sceneParameters;
+                buildIndex = null;
+            }
+            
+            public AsyncOperation LoadAsync()
+            {
+                return buildIndex.HasValue ? SceneManager.LoadSceneAsync(buildIndex.Value, sceneParameters) : SceneManager.LoadSceneAsync(sceneName, sceneParameters);
+            }
+        }
+        
         public GraphicsFader graphicsFader;
         public Slider loadingBar;
         
@@ -28,19 +55,23 @@ namespace CLogic.Utils.UI
         }
 
         private Coroutine loadingCoroutine;
+
+        public void LoadSceneAsync(string sceneName) => LoadSceneAsync(sceneName, new LoadSceneParameters(LoadSceneMode.Single));
+        public void LoadSceneAsync(string sceneName, LoadSceneParameters sceneParameters) => LoadSceneAsync(new Loader(sceneName, sceneParameters));
         
         public void LoadSceneAsync(int buildIndex) => LoadSceneAsync(buildIndex, new LoadSceneParameters(LoadSceneMode.Single));
+        public void LoadSceneAsync(int buildIndex, LoadSceneParameters sceneParameters) => LoadSceneAsync(new Loader(buildIndex, sceneParameters));
 
-        public void LoadSceneAsync(int buildIndex, LoadSceneParameters parameters)
+        private void LoadSceneAsync(Loader loader)
         {
             if(IsLoading)
                 return;
             
             IsLoading = true;
-            loadingCoroutine = StartCoroutine(LoadSceneCoroutine(buildIndex, parameters));
+            loadingCoroutine = StartCoroutine(LoadSceneCoroutine(loader));
         }
 
-        private IEnumerator LoadSceneCoroutine(int buildIndex, LoadSceneParameters parameters)
+        private IEnumerator LoadSceneCoroutine(Loader loader)
         {
             OnLoadingStart?.Invoke();
 
@@ -62,8 +93,8 @@ namespace CLogic.Utils.UI
                 loadingBarDisplay.OnComplete -= showLoadingBar;
             };
             loadingBarDisplay.OnComplete += showLoadingBar;
-            
-            AsyncOperation operation = SceneManager.LoadSceneAsync(buildIndex, parameters);
+
+            AsyncOperation operation = loader.LoadAsync();
             
             loadDelay.Start();
             Action allowSceneActivation = null;
