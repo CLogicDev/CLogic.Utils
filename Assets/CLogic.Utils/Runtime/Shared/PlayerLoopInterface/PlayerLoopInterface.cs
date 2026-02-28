@@ -322,10 +322,12 @@ namespace CLogic.Utils.Shared
             return sb.ToString();
         }
 
+        #if UNITY_EDITOR
         [MenuItem("Tools/CLogic/Output Player Loop")]
         private static void OutputPlayerLoopToConsole()
         {
             Debug.Log(CurrentLoopToString());
         }
+        #endif
     }
 }
