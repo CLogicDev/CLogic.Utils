@@ -2,9 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.LowLevel;
 namespace CLogic.Utils.Shared
@@ -28,24 +26,27 @@ namespace CLogic.Utils.Shared
 
         private static List<PlayerLoopSystem> insertedSystems = new List<PlayerLoopSystem>();
 
+
+        #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod]
         private static void Initialize()
         {
             // Systems are not automatically removed from the PlayerLoop, so we need to clean up the ones that have been added in play mode, as they'd otherwise
             // keep running when outside play mode, and in the next play mode if we don't have assembly reload turned on.
-            EditorApplication.playModeStateChanged += ClearSystems;
+            UnityEditor.EditorApplication.playModeStateChanged += ClearSystems;
             
             return;
 
-            void ClearSystems(PlayModeStateChange stateChange)
+            void ClearSystems(UnityEditor.PlayModeStateChange stateChange)
             {
-                if(stateChange == PlayModeStateChange.ExitingEditMode || stateChange == PlayModeStateChange.ExitingPlayMode)
+                if(stateChange == UnityEditor.PlayModeStateChange.ExitingEditMode || stateChange == UnityEditor.PlayModeStateChange.ExitingPlayMode)
                 {
                     ClearInsertedSystems();
-                    EditorApplication.playModeStateChanged -= ClearSystems;
+                    UnityEditor.EditorApplication.playModeStateChanged -= ClearSystems;
                 }
             }
         }
+        #endif
 
         private static void ClearInsertedSystems()
         {
@@ -323,7 +324,7 @@ namespace CLogic.Utils.Shared
         }
 
         #if UNITY_EDITOR
-        [MenuItem("Tools/CLogic/Output Player Loop")]
+        [UnityEditor.MenuItem("Tools/CLogic/Output Player Loop")]
         private static void OutputPlayerLoopToConsole()
         {
             Debug.Log(CurrentLoopToString());
