@@ -37,7 +37,6 @@ namespace CLogic.Utils.Shared
             UnityEditor.EditorBuildSettings.AddConfigObject(instance.Key, settingsCache, true);
             
             #else
-            Debug.LogWarning(instance.AssetName);
             settingsCache = Resources.Load<T>(Path.GetFileNameWithoutExtension(instance.AssetName));
             DestroyImmediate(instance);
             #endif
