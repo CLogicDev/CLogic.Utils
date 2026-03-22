@@ -19,7 +19,7 @@ namespace CLogic.Utils
         #if UNITY_EDITOR
         protected override void OnSettingsCreated()
         {
-            if(!UnityEditor.GUID.TryParse(MODAL_WINDOW_GUID, out var guid))
+            if(!GUID.TryParse(MODAL_WINDOW_GUID, out var guid))
             {
                 Debug.LogWarning("Modal window prefab could not be found");
                 return;
