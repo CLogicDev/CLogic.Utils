@@ -66,7 +66,8 @@ namespace CLogic.Utils.UI
                 onWritingFinished?.Invoke();
             }
 
-            StopCoroutine(writingCoroutine);
+            if(writingCoroutine != null)
+                StopCoroutine(writingCoroutine);
             IsWriting = false;
         }
 
