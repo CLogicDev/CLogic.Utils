@@ -103,3 +103,4 @@ InitTestScene*.unity*
 
 # Except .meta files under Assets/
 !Assets/**/*.meta
+!Assets/CLogic.Utils/Plugins/*.pdb
