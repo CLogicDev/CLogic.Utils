@@ -50,7 +50,7 @@ namespace CLogic.Utils.UI
 
         private void Awake()
         {
-            transform.parent = null;
+            transform.SetParent(null);
             DontDestroyOnLoad(gameObject);
         }
 
