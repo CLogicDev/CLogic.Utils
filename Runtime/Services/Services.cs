@@ -3,7 +3,7 @@ using UnityEngine;
 using CLogic.Core.LifeCycles;
 using CLogic.Core.Services;
 
-namespace CLogic.Utils.ServiceSystem
+namespace CLogic.Utils.Services
 {
 	public static class Services
 	{

@@ -1,9 +1,8 @@
 {
-    "name": "CLogic.Runtime.Utils",
+    "name": "CLogic.Utils",
     "rootNamespace": "CLogic.Utils",
     "references": [
-        "GUID:18e444a6db19f1443abb7f71f386f519",
-        "GUID:452e796ae00dde247b9cc0b3415946e7"
+        "GUID:ab2be06f3aab2c84f99fe2868d754b73"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

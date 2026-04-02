@@ -1,9 +1,7 @@
 {
-    "name": "CLogic.Runtime.Utils.ServiceSystem",
-    "rootNamespace": "CLogic.Utils.ServiceSystem",
-    "references": [
-        "GUID:18e444a6db19f1443abb7f71f386f519"
-    ],
+    "name": "CLogic.Utils.Services",
+    "rootNamespace": "CLogic.Utils.Services",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -1,7 +1,7 @@
 ﻿using CLogic.Core.LifeCycles;
 using UnityEngine.SceneManagement;
 
-namespace CLogic.Utils.ServiceSystem
+namespace CLogic.Utils.Services
 {
 	public class SceneLifeCycle : LifeCycle<SceneLifeCycle>
 	{
