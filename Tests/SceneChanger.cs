@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using CLogic.Utils.ServiceSystem;
+using CLogic.Utils.Service;
 using UnityEngine.SceneManagement;
 
 namespace CLogic.Utils.Tests

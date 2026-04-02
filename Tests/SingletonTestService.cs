@@ -2,7 +2,7 @@
 using UnityEngine;
 using CLogic.Core.DataSaving;
 using CLogic.Core.LifeCycles;
-using CLogic.Utils.ServiceSystem;
+using CLogic.Utils.Service;
 
 namespace CLogic.Utils.Tests
 {

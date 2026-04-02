@@ -2,10 +2,10 @@
     "name": "CLogic.Utils.Tests",
     "rootNamespace": "CLogic.Utils.Tests",
     "references": [
-        "CLogic.Utils.UI",
-        "CLogic.Utils.Shared",
-        "CLogic.Utils",
-        "CLogic.Runtime.Utils.Services"
+        "GUID:469a165fb75484b4d8ddb2d20708801c",
+        "GUID:ab2be06f3aab2c84f99fe2868d754b73",
+        "GUID:c521dbdf32fe8f847b29afbfcbe81a3b",
+        "GUID:3257fe38e7a0a1b45901a07fe97fa52a"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
