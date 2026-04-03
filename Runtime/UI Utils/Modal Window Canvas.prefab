@@ -109,6 +109,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -425,6 +426,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -703,6 +705,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -920,6 +923,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1315,7 +1319,7 @@ GameObject:
   - component: {fileID: 3428795564528233452}
   - component: {fileID: 601991613257076391}
   - component: {fileID: 5358947419176444004}
-  - component: {fileID: 3973303856660837499}
+  - component: {fileID: 8135769395217733029}
   m_Layer: 5
   m_Name: Modal Window Canvas
   m_TagString: Untagged
@@ -1362,6 +1366,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1407,7 +1412,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3973303856660837499
+--- !u!114 &8135769395217733029
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1416,7 +1421,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8914360592087607079}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0020a4a219bc47b999ce83519ff3a6d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 470553f77ad604d468591e14caae5f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: CLogic.Utils.UI::CLogic.Utils.UI.ModalWindow
   titleDisplay: {fileID: 6880818036991319723}
