@@ -97,10 +97,3 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
-
-# Ignore all .meta files everywhere
-*.meta
-
-# Except .meta files under Assets/
-!Assets/**/*.meta
-!Assets/CLogic.Utils/Plugins/*.pdb
