@@ -19,13 +19,15 @@ namespace CLogic.Utils
         #if UNITY_EDITOR
         protected override void OnSettingsCreated()
         {
-            if(!GUID.TryParse(MODAL_WINDOW_GUID, out var guid))
+            string path = UnityEditor.AssetDatabase.AssetPathToGUID(MODAL_WINDOW_GUID);
+            
+            if(path == null)
             {
                 Debug.LogWarning("Modal window prefab could not be found");
                 return;
             }
             
-            ModalWindow mw = UnityEditor.AssetDatabase.LoadAssetByGUID<ModalWindow>(guid);
+            ModalWindow mw = UnityEditor.AssetDatabase.LoadAssetAtPath<ModalWindow>(path);
 
             modalWindow = mw;
         }
