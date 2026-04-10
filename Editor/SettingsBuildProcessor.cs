@@ -65,7 +65,7 @@ namespace CLogic.Utils.Settings
 
         public void ProcessType(Type type)
         { 
-            Debug.Log("[CLogic Build Processor] Processing " + type.FullName);
+            Integrations.Log("[CLogic Build Processor] Processing " + type.FullName);
             //No graceful error handling, Unity will fail the build on error
             var GetOrCreateMethod = type.GetMethod("GetOrCreateSettings", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
             var GetAssetName = type.GetProperty("AssetName", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Public);
@@ -112,7 +112,7 @@ namespace CLogic.Utils.Settings
         {
             foreach (string buildPath in SettingsPreProcessor.buildPaths)
             {
-                Debug.Log("[CLogic Build Processor] Processing post build for asset at" + buildPath);
+                Integrations.Log("[CLogic Build Processor] Processing post build for asset at" + buildPath);
                 AssetDatabase.DeleteAsset(buildPath);
             }
             
@@ -125,7 +125,7 @@ namespace CLogic.Utils.Settings
                 return;
             // Delete resources folder after use if it was not created previously
             AssetDatabase.DeleteAsset(SettingsPreProcessor.RESOURCES_FOLDER_DIR);
-            Debug.Log("[CLogic Build Processor] Deleted empty Resources folder");
+            Integrations.Log("[CLogic Build Processor] Deleted empty Resources folder");
         }
     }
 }

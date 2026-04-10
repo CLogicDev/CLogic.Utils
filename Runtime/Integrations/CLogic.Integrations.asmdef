@@ -1,0 +1,22 @@
+{
+    "name": "CLogic.Integrations",
+    "rootNamespace": "CLogic.Integrations",
+    "references": [
+        "GUID:d0fcf9afcf2e5be458acc780bb15d8b8"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "dev.clogic.logging",
+            "expression": "",
+            "define": "CLOGIC_LOGGING"
+        }
+    ],
+    "noEngineReferences": false
+}

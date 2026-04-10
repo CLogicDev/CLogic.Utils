@@ -23,7 +23,7 @@ namespace CLogic.Utils
             
             if(path == null)
             {
-                Debug.LogWarning("Modal window prefab could not be found");
+                Integrations.LogWarning("Modal window prefab could not be found");
                 return;
             }
             
