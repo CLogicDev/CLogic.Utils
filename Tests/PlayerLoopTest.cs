@@ -10,10 +10,10 @@ namespace CLogic.Utils.Tests
         {
             PlayerLoopInterface.InsertSystemBefore(typeof(PlayerLoopTest), UpdateFunction, typeof(Update.ScriptRunBehaviourUpdate));
         }
-
-        void UpdateFunction()
+        
+        private void UpdateFunction()
         {
-            Debug.Log("frame "  + Time.frameCount);
+            Debug.Log("frame " + Time.frameCount);
         }
     }
 }

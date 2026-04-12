@@ -12,61 +12,52 @@ namespace CLogic.Utils
          */
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace]
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void Log(string message) => Log(message, 1);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace]
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void Log(string message, Object context) => Log(message, 1, context);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace]
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void LogWarning(string message) => Log(message, 2);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace]
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void LogWarning(string message, Object context) => Log(message, 2, context);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace]
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void LogError(string message) => Log(message, 3);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace]
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void LogError(string message, Object context) => Log(message, 3, context);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace] 
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void Log(string message, int level) => Log(message, level, null);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace] 
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void Log(string message, int level, Object context) => Log(message, level, context, true, null);
         
         #if CLOGIC_LOGGING
-        [CLogic.Systems.Logging.IgnoreStackTrace] 
+        [Systems.Logging.IgnoreStackTrace, HideInCallstack]
         #endif
-        [HideInCallstack]
         public static void Log(string message, int level, Object context, bool doFileLog, bool? doConsoleLog, bool? showStackTrace = null)
         {
             #if CLOGIC_LOGGING
-            CLogic.Systems.Logging.CLog.Log(message, (CLogic.Systems.Logging.LogLevel)level, context, doFileLog, doConsoleLog, showStackTrace);
+            Systems.Logging.CLog.Log(message, (Systems.Logging.LogLevel)level, context, doFileLog, doConsoleLog, showStackTrace);
             #else
             switch (level)
             {
@@ -82,6 +73,5 @@ namespace CLogic.Utils
             }
             #endif
         }
-        
     }
 }

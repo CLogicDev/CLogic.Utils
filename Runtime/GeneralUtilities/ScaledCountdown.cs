@@ -10,29 +10,29 @@ namespace CLogic.Utils
         
         [field: SerializeField]
         public double MaximumTime { get; set; }
-
+        
         public override bool IsFinished => TimeLeftSeconds <= MinimumTime;
         
-        public override float PercentageCompletion => Mathf.InverseLerp((float)TargetDuration, (float)MinimumTime,  (float)TimeLeftSeconds);
-
+        public override float PercentageCompletion => Mathf.InverseLerp((float)TargetDuration, (float)MinimumTime, (float)TimeLeftSeconds);
+        
         public override void Tick(double timeSinceLastFrameSeconds)
         {
-            if(!IsActive)
+            if (!IsActive)
                 return;
             
-            if(TimeLeftSeconds <= MinimumTime)
+            if (TimeLeftSeconds <= MinimumTime)
                 return;
             
             TimeLeftSeconds -= timeSinceLastFrameSeconds;
-
+            
             TimeLeftSeconds = Math.Clamp(TimeLeftSeconds, MinimumTime, MaximumTime);
             
-            if(TimeLeftSeconds <= MinimumTime)
+            if (TimeLeftSeconds <= MinimumTime)
             {
                 OnComplete?.Invoke();
             }
         }
-
+        
         public override void SetTargetTime(double targetTime)
         {
             Math.Clamp(targetTime, MinimumTime, MaximumTime);

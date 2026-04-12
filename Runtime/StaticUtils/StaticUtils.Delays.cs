@@ -5,32 +5,25 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 namespace CLogic.Utils
 {
-    class CLogicDelays {}
+    internal class CLogicDelays {}
     public partial class StaticUtils
     {
         private static IDelayCaller delayCaller;
         
-        public static DelayHandle ExecuteDelayed(Action action, float delaySeconds)
-        {
-            return delayCaller.AddDelay(action, delaySeconds);
-        }
-
-        public static bool CancelDelay(DelayHandle handle)
-        {
-            return delayCaller.RemoveDelay(handle);
-        }
+        public static DelayHandle ExecuteDelayed(Action action, float delaySeconds) => delayCaller.AddDelay(action, delaySeconds);
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static bool CancelDelay(DelayHandle handle) => delayCaller.RemoveDelay(handle);
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration), UnityEditor.InitializeOnLoadMethod]
         #if UNITY_EDITOR
-        [UnityEditor.InitializeOnLoadMethod]
         #endif
         public static void SetupCallers()
         {
-            if(Application.isPlaying)
+            if (Application.isPlaying)
             {
-                if(delayCaller is DelayCallerRuntime)
+                if (delayCaller is DelayCallerRuntime)
                     return;
-
+                
                 delayCaller = new DelayCallerRuntime();
             }
             #if UNITY_EDITOR
@@ -41,7 +34,7 @@ namespace CLogic.Utils
             #endif
         }
     }
-
+    
     public class DelayHandle
     {
         public Action callback;
@@ -53,7 +46,7 @@ namespace CLogic.Utils
             this.dueTime = dueTime;
         }
     }
-
+    
     internal interface IDelayCaller
     {
         public DelayHandle AddDelay(Action callback, float delaySeconds);
@@ -64,7 +57,7 @@ namespace CLogic.Utils
     internal class DelayCallerRuntime : IDelayCaller
     {
         internal DelayScheduler scheduler = new();
-
+        
         public DelayCallerRuntime()
         {
             PlayerLoopInterface.InsertSystemBefore(typeof(DelayCallerRuntime), Update, typeof(Update.ScriptRunBehaviourUpdate));
@@ -74,14 +67,11 @@ namespace CLogic.Utils
         {
             var handle = new DelayHandle(callback, Time.realtimeSinceStartupAsDouble + delaySeconds);
             scheduler.AddDelay(handle);
-
+            
             return handle;
         }
-        public bool RemoveDelay(DelayHandle handle)
-        {
-            return scheduler.RemoveDelay(handle);
-        }
-
+        public bool RemoveDelay(DelayHandle handle) => scheduler.RemoveDelay(handle);
+        
         private void Update()
         {
             scheduler.CheckDelays(Time.realtimeSinceStartupAsDouble);
@@ -92,7 +82,7 @@ namespace CLogic.Utils
     internal class DelayCallerEditor : IDelayCaller
     {
         private DelayScheduler scheduler = new();
-
+        
         public DelayCallerEditor()
         {
             UnityEditor.EditorApplication.update += Update;
@@ -103,13 +93,10 @@ namespace CLogic.Utils
             var handle = new DelayHandle(callback, UnityEditor.EditorApplication.timeSinceStartup + delaySeconds);
             scheduler.AddDelay(handle);
             
-            return  handle;
+            return handle;
         }
-        public bool RemoveDelay(DelayHandle handle)
-        {
-            return scheduler.RemoveDelay(handle);
-        }
-
+        public bool RemoveDelay(DelayHandle handle) => scheduler.RemoveDelay(handle);
+        
         private void Update()
         {
             scheduler.CheckDelays(UnityEditor.EditorApplication.timeSinceStartup);
@@ -128,33 +115,33 @@ namespace CLogic.Utils
         
         public void AddDelay(DelayHandle delay)
         {
-            for(int i = 0; i < pendingActions.Count; i++)
+            for (int i = 0; i < pendingActions.Count; i++)
             {
                 DelayHandle handle = pendingActions[i];
-                if(delay.dueTime <= handle.dueTime)
+                if (delay.dueTime <= handle.dueTime)
                 {
                     pendingActions.Insert(i, delay);
                     return;
                 }
             }
-
+            
             pendingActions.Add(delay);
         }
         
         public bool RemoveDelay(DelayHandle handle) => pendingActions.Remove(handle);
-
+        
         public void CheckDelays(double currentTime)
         {
             foreach (DelayHandle delay in pendingActions.ToArray())
             {
-                if(delay.dueTime > currentTime)
+                if (delay.dueTime > currentTime)
                     return;
-
+                
                 delay.callback?.Invoke();
                 pendingActions.Remove(delay);
             }
         }
-
+        
         public void CallAllDelays()
         {
             foreach (DelayHandle delay in pendingActions)

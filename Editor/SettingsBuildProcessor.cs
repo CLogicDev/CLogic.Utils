@@ -15,19 +15,20 @@ namespace CLogic.Utils.Settings
         internal const string RESOURCES_FOLDER_DIR = "Assets/" + RESOURCES_FOLDER_NAME;
         internal const string RESOURCES_FOLDER_NAME = "Resources";
         public int callbackOrder => 0;
-
-#pragma warning disable UDR0001 
+        
+        #pragma warning disable UDR0001
+        
         //Reset on the post processor
         internal static List<string> buildPaths = new();
-#pragma warning restore UDR0001
+        #pragma warning restore UDR0001
         
         public void OnPreprocessBuild(BuildReport report)
         {
             List<Type> settingTypes = GetSettingsToProcess();
             buildPaths = new List<string>(settingTypes.Count);
-
             
-            if(settingTypes.Count != 0 && !Directory.Exists(RESOURCES_FOLDER_DIR))
+            
+            if (settingTypes.Count != 0 && !Directory.Exists(RESOURCES_FOLDER_DIR))
                 AssetDatabase.CreateFolder("Assets", RESOURCES_FOLDER_NAME);
             
             AssetDatabase.StartAssetEditing();
@@ -42,41 +43,42 @@ namespace CLogic.Utils.Settings
             {
                 AssetDatabase.StopAssetEditing();
             }
-
-#pragma warning disable UDR0005
+            
+            #pragma warning disable UDR0005
             Application.logMessageReceived += HandleLogFailMessage;
-#pragma warning restore UDR0005
+            #pragma warning restore UDR0005
         }
-
-        void HandleLogFailMessage(string msg, string _, LogType type)
+        
+        private void HandleLogFailMessage(string msg, string _, LogType type)
         {
-            if(type == LogType.Error && (msg.Contains(nameof(BuildFailedException)) || msg.Contains("Build completed with a result of 'Failed'")))
+            if (type == LogType.Error && (msg.Contains(nameof(BuildFailedException)) || msg.Contains("Build completed with a result of 'Failed'")))
             {
                 new SettingsPostProcessor().DiscardBuildResources();
             }
-
-            if(type == LogType.Log && msg.Contains("Cancelled"))
+            
+            if (type == LogType.Log && msg.Contains("Cancelled"))
             {
                 new SettingsPostProcessor().DiscardBuildResources();
             }
             
             Application.logMessageReceived -= HandleLogFailMessage;
         }
-
+        
         public void ProcessType(Type type)
-        { 
+        {
             Integrations.Log("[CLogic Build Processor] Processing " + type.FullName);
+            
             //No graceful error handling, Unity will fail the build on error
-            var GetOrCreateMethod = type.GetMethod("GetOrCreateSettings", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-            var GetAssetName = type.GetProperty("AssetName", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Public);
-
-            ScriptableObject asset = (ScriptableObject)GetOrCreateMethod.Invoke(null, null);
+            MethodInfo GetOrCreateMethod = type.GetMethod("GetOrCreateSettings", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+            PropertyInfo GetAssetName = type.GetProperty("AssetName", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Public);
+            
+            var asset = (ScriptableObject)GetOrCreateMethod.Invoke(null, null);
             string assetPath = AssetDatabase.GetAssetPath(asset);
             string assetName = (string)GetAssetName.GetValue(asset);
             
-            if(asset == null)
+            if (asset == null)
                 throw new BuildFailedException($"[CLogic Build Processor] Missing asset file for {type.FullName}");
-
+            
             string temporaryBuildPath = Path.Combine(RESOURCES_FOLDER_DIR, assetName);
             AssetDatabase.CopyAsset(assetPath, temporaryBuildPath);
             AssetDatabase.ImportAsset(temporaryBuildPath);
@@ -87,19 +89,19 @@ namespace CLogic.Utils.Settings
         public List<Type> GetSettingsToProcess()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .Where(t => t.IsClass && !t.IsAbstract)
-                .Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(SettingsSo<>))
-                .ToList();
+                    .SelectMany(a => a.GetTypes())
+                    .Where(t => t.IsClass && !t.IsAbstract)
+                    .Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(SettingsSo<>))
+                    .ToList();
         }
-
+        
         ~SettingsPreProcessor()
         {
             Application.logMessageReceived -= HandleLogFailMessage;
         }
     }
-
-    class SettingsPostProcessor : IPostprocessBuildWithReport
+    
+    internal class SettingsPostProcessor : IPostprocessBuildWithReport
     {
         public int callbackOrder => int.MaxValue;
         
@@ -107,7 +109,7 @@ namespace CLogic.Utils.Settings
         {
             DiscardBuildResources();
         }
-
+        
         public void DiscardBuildResources()
         {
             foreach (string buildPath in SettingsPreProcessor.buildPaths)
@@ -117,12 +119,13 @@ namespace CLogic.Utils.Settings
             }
             
             SettingsPreProcessor.buildPaths.Clear();
-
-            if(!Directory.Exists(SettingsPreProcessor.RESOURCES_FOLDER_DIR)) //On Unity 6000, test runner automatically deletes the resources folder
+            
+            if (!Directory.Exists(SettingsPreProcessor.RESOURCES_FOLDER_DIR)) //On Unity 6000, test runner automatically deletes the resources folder
                 return;
             
-            if(Directory.GetFileSystemEntries(Path.GetFullPath(SettingsPreProcessor.RESOURCES_FOLDER_DIR)).Length != 0)
+            if (Directory.GetFileSystemEntries(Path.GetFullPath(SettingsPreProcessor.RESOURCES_FOLDER_DIR)).Length != 0)
                 return;
+            
             // Delete resources folder after use if it was not created previously
             AssetDatabase.DeleteAsset(SettingsPreProcessor.RESOURCES_FOLDER_DIR);
             Integrations.Log("[CLogic Build Processor] Deleted empty Resources folder");

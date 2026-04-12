@@ -12,7 +12,7 @@ namespace CLogic.Utils.UI
         {
             public int? buildIndex;
             public string sceneName;
-
+            
             public LoadSceneParameters sceneParameters;
             
             public Loader(int buildIndex, LoadSceneParameters sceneParameters)
@@ -21,7 +21,7 @@ namespace CLogic.Utils.UI
                 this.sceneParameters = sceneParameters;
                 sceneName = null;
             }
-
+            
             public Loader(string sceneName, LoadSceneParameters sceneParameters)
             {
                 this.sceneName = sceneName;
@@ -29,10 +29,7 @@ namespace CLogic.Utils.UI
                 buildIndex = null;
             }
             
-            public AsyncOperation LoadAsync()
-            {
-                return buildIndex.HasValue ? SceneManager.LoadSceneAsync(buildIndex.Value, sceneParameters) : SceneManager.LoadSceneAsync(sceneName, sceneParameters);
-            }
+            public AsyncOperation LoadAsync() => buildIndex.HasValue ? SceneManager.LoadSceneAsync(buildIndex.Value, sceneParameters) : SceneManager.LoadSceneAsync(sceneName, sceneParameters);
         }
         
         public GraphicsFader graphicsFader;
@@ -43,38 +40,38 @@ namespace CLogic.Utils.UI
         public Countdown loadingBarDisplay;
         public Countdown loadDelay;
         
-        public bool IsLoading {get; private set;}
+        public bool IsLoading { get; private set; }
         public Action OnLoadingStart;
         public Action OnLoadingComplete;
         public Action<float> OnLoadingProgress;
-
+        
         private void Awake()
         {
             transform.SetParent(null);
             DontDestroyOnLoad(gameObject);
         }
-
+        
         private Coroutine loadingCoroutine;
-
+        
         public void LoadSceneAsync(string sceneName) => LoadSceneAsync(sceneName, new LoadSceneParameters(LoadSceneMode.Single));
         public void LoadSceneAsync(string sceneName, LoadSceneParameters sceneParameters) => LoadSceneAsync(new Loader(sceneName, sceneParameters));
         
         public void LoadSceneAsync(int buildIndex) => LoadSceneAsync(buildIndex, new LoadSceneParameters(LoadSceneMode.Single));
         public void LoadSceneAsync(int buildIndex, LoadSceneParameters sceneParameters) => LoadSceneAsync(new Loader(buildIndex, sceneParameters));
-
+        
         private void LoadSceneAsync(Loader loader)
         {
-            if(IsLoading)
+            if (IsLoading)
                 return;
             
             IsLoading = true;
             loadingCoroutine = StartCoroutine(LoadSceneCoroutine(loader));
         }
-
+        
         private IEnumerator LoadSceneCoroutine(Loader loader)
         {
             OnLoadingStart?.Invoke();
-
+            
             fadeIn.Start();
             graphicsFader.gameObject.SetActive(true);
             while (!fadeIn.IsFinished)
@@ -85,7 +82,7 @@ namespace CLogic.Utils.UI
             }
             
             loadingBarDisplay.Start();
-
+            
             Action showLoadingBar = null;
             showLoadingBar = () =>
             {
@@ -93,7 +90,7 @@ namespace CLogic.Utils.UI
                 loadingBarDisplay.OnComplete -= showLoadingBar;
             };
             loadingBarDisplay.OnComplete += showLoadingBar;
-
+            
             AsyncOperation operation = loader.LoadAsync();
             
             loadDelay.Start();
@@ -110,7 +107,7 @@ namespace CLogic.Utils.UI
                 loadingBarDisplay.Tick(Time.deltaTime);
                 loadDelay.Tick(Time.deltaTime);
                 OnLoadingProgress?.Invoke(operation.progress);
-
+                
                 loadingBar.value = operation.progress / 0.9f;
                 
                 yield return null;

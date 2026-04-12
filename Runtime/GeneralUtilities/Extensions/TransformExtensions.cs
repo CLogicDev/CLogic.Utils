@@ -14,16 +14,16 @@ namespace CLogic.Utils
         {
             List<Transform> parents = new();
             Transform parent = child.parent;
-
+            
             while (parent != null)
             {
                 parents.Add(parent);
                 parent = parent.parent;
             }
-
+            
             return parents;
         }
-
+        
         /// <summary>
         /// Destroys all the children in a parent
         /// </summary>
@@ -35,6 +35,5 @@ namespace CLogic.Utils
                 Object.Destroy(child.gameObject);
             }
         }
-
     }
 }
