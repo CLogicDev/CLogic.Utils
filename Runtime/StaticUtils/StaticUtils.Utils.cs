@@ -55,20 +55,31 @@ namespace CLogic.Utils
         /// Gets all the parents of a transform
         /// </summary>
         /// <param name="child">The child whom to query for its parents</param>
-        /// <returns>An list of the parents of the child from closet to furthest</returns>
-        public static List<Transform> GetParents(this Transform child)
+        /// <returns>An enumerator the parents of the child from closet to furthest</returns>
+        public static IEnumerable<Transform> GetParents(this Transform child)
         {
-            List<Transform> parents = new();
             Transform parent = child.parent;
             
             while (parent != null)
             {
-                parents.Add(parent);
+                yield return parent;
                 parent = parent.parent;
             }
-            
-            return parents;
         }
+        
+        #if UNITY_EDITOR
+        public static IEnumerable<T> GetObjectsOfType<T>() where T : ScriptableObject
+        {
+            string[] guids = UnityEditor.AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+            
+            foreach (string guid in guids)
+            {
+                string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
+                yield return asset;
+            }
+        }
+        #endif
         
         /// <summary>
         /// Execute logic once
