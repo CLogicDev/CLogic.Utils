@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
+using Object = UnityEngine.Object;
 
 namespace CLogic.Utils
 {
@@ -68,7 +69,7 @@ namespace CLogic.Utils
         }
         
         #if UNITY_EDITOR
-        public static IEnumerable<T> GetObjectsOfType<T>() where T : ScriptableObject
+        public static IEnumerable<T> GetObjectsOfType<T>() where T : Object
         {
             string[] guids = UnityEditor.AssetDatabase.FindAssets($"t:{typeof(T).Name}");
             
