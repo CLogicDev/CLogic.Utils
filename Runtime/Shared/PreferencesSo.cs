@@ -29,28 +29,34 @@ namespace CLogic.Utils.Shared
 
         public static T GetOrCreatePreferences()
         {
+            var instance = CreateInstance<T>();
             #if UNITY_EDITOR
-            if (preferencesCache != null)
-                return preferencesCache;
 
-            var probe = CreateInstance<T>();
-            Object[] loaded = UnityEditorInternal.InternalEditorUtility.LoadSerializedFileAndForget(probe.FilePath);
-
-            if (loaded != null && loaded.Length > 0 && loaded[0] is T existing)
+            if (preferencesCache != null || TryLoad(instance.FilePath, out preferencesCache))
             {
-                DestroyImmediate(probe);
-                preferencesCache = existing;
+                DestroyImmediate(instance);
                 return preferencesCache;
             }
 
-            preferencesCache = probe;
-            preferencesCache.OnPreferencesCreated();
-            preferencesCache.Save();
+            preferencesCache = instance;
+
+            instance.OnPreferencesCreated();
+            instance.Save();
+
+            #else
+            DestroyImmediate(instance);
+            #endif
 
             return preferencesCache;
-            #else
-            return preferencesCache;
-            #endif
         }
+
+        #if UNITY_EDITOR
+        private static bool TryLoad(string path, out T result)
+        {
+            Object[] loaded = UnityEditorInternal.InternalEditorUtility.LoadSerializedFileAndForget(path);
+            result = loaded != null && loaded.Length > 0 ? loaded[0] as T : null;
+            return result != null;
+        }
+        #endif
     }
 }
