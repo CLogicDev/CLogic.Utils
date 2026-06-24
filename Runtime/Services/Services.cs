@@ -8,8 +8,9 @@ namespace CLogic.Utils.Service
     public static class Services
     {
         private static ServiceManager manager = new();
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         #if UNITY_EDITOR
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration), UnityEditor.InitializeOnLoadMethod]
+        [UnityEditor.InitializeOnLoadMethod]
         #endif
         private static void SetupManager()
         {
