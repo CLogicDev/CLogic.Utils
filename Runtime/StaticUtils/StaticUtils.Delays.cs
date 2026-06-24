@@ -14,8 +14,8 @@ namespace CLogic.Utils
         
         public static bool CancelDelay(DelayHandle handle) => delayCaller.RemoveDelay(handle);
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration), UnityEditor.InitializeOnLoadMethod]
         #if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration), UnityEditor.InitializeOnLoadMethod]
         #endif
         public static void SetupCallers()
         {
