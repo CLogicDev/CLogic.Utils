@@ -10,8 +10,8 @@ namespace CLogic.Utils.Shared
         
         public static event Action OnEnvironmentSet;
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration), UnityEditor.InitializeOnLoadMethod]
         #if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration), UnityEditor.InitializeOnLoadMethod]
         #endif
         public static void InjectEnvironmentVariables()
         {
