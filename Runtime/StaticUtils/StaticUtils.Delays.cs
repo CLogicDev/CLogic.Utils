@@ -22,8 +22,8 @@ namespace CLogic.Utils
         {
             if (Application.isPlaying)
             {
-                if (delayCaller is DelayCallerRuntime)
-                    return;
+                if (delayCaller is DelayCallerRuntime delayCallerRuntime)
+                    delayCallerRuntime.RemoveFromPlayerLoop();
                 
                 delayCaller = new DelayCallerRuntime();
             }
@@ -76,6 +76,11 @@ namespace CLogic.Utils
         private void Update()
         {
             scheduler.CheckDelays(Time.realtimeSinceStartupAsDouble);
+        }
+        
+        public void RemoveFromPlayerLoop()
+        {
+            PlayerLoopInterface.TryRemoveSystem(typeof(DelayCallerRuntime));
         }
     }
     
