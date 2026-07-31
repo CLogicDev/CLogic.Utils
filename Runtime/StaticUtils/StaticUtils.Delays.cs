@@ -20,17 +20,31 @@ namespace CLogic.Utils
         #endif
         public static void SetupCallers()
         {
-            if (Application.isPlaying)
+            SetupCallersCore();
+        }
+        
+        internal static void SetupCallersCore(bool forceEditor = false)
+        {
+            IDelayCaller previousCaller = delayCaller;
+            if (Application.isPlaying && !forceEditor)
             {
-                if (delayCaller is DelayCallerRuntime delayCallerRuntime)
-                    delayCallerRuntime.RemoveFromPlayerLoop();
-                
                 delayCaller = new DelayCallerRuntime();
+                if (previousCaller != null)
+                {
+                    delayCaller.Scheduler.AddDelays(previousCaller.Scheduler.pendingActions, -UnityEditor.EditorApplication.timeSinceStartup);
+                    previousCaller.Dispose();;
+                }
             }
             #if UNITY_EDITOR
             else
             {
                 delayCaller = new DelayCallerEditor();
+                if (previousCaller != null)
+                {
+                    double delayOffset = UnityEditor.EditorApplication.timeSinceStartup - Time.realtimeSinceStartupAsDouble;
+                    delayCaller.Scheduler.AddDelays(previousCaller.Scheduler.pendingActions, delayOffset);
+                    previousCaller.Dispose();;
+                }
             }
             #endif
         }
@@ -48,8 +62,10 @@ namespace CLogic.Utils
         }
     }
     
-    internal interface IDelayCaller
+    internal interface IDelayCaller : IDisposable
     {
+        public DelayScheduler Scheduler { get; set; }
+        
         public DelayHandle AddDelay(Action callback, float delaySeconds);
         
         public bool RemoveDelay(DelayHandle handle);
@@ -57,28 +73,36 @@ namespace CLogic.Utils
     
     internal class DelayCallerRuntime : IDelayCaller
     {
-        internal DelayScheduler scheduler = new();
+        public DelayScheduler Scheduler { get; set; } = new();
         
         public DelayCallerRuntime()
         {
             PlayerLoopInterface.InsertSystemBefore(typeof(DelayCallerRuntime), Update, typeof(Update.ScriptRunBehaviourUpdate));
+            Application.quitting += HandlePlayModeExit;
+        }
+        private void HandlePlayModeExit()
+        {
+            if(!Application.isEditor)
+                return;
+            
+            StaticUtils.SetupCallersCore(true);
         }
         
         public DelayHandle AddDelay(Action callback, float delaySeconds)
         {
             var handle = new DelayHandle(callback, Time.realtimeSinceStartupAsDouble + delaySeconds);
-            scheduler.AddDelay(handle);
+            Scheduler.AddDelay(handle);
             
             return handle;
         }
-        public bool RemoveDelay(DelayHandle handle) => scheduler.RemoveDelay(handle);
+        public bool RemoveDelay(DelayHandle handle) => Scheduler.RemoveDelay(handle);
         
         private void Update()
         {
-            scheduler.CheckDelays(Time.realtimeSinceStartupAsDouble);
+            Scheduler.CheckDelays(Time.realtimeSinceStartupAsDouble);
         }
         
-        public void RemoveFromPlayerLoop()
+        public void Dispose()
         {
             PlayerLoopInterface.TryRemoveSystem(typeof(DelayCallerRuntime));
         }
@@ -87,7 +111,7 @@ namespace CLogic.Utils
     #if UNITY_EDITOR
     internal class DelayCallerEditor : IDelayCaller
     {
-        private DelayScheduler scheduler = new();
+        public DelayScheduler Scheduler { get; set; }= new();
         
         public DelayCallerEditor()
         {
@@ -97,27 +121,27 @@ namespace CLogic.Utils
         public DelayHandle AddDelay(Action callback, float delaySeconds)
         {
             var handle = new DelayHandle(callback, UnityEditor.EditorApplication.timeSinceStartup + delaySeconds);
-            scheduler.AddDelay(handle);
+            Scheduler.AddDelay(handle);
             
             return handle;
         }
-        public bool RemoveDelay(DelayHandle handle) => scheduler.RemoveDelay(handle);
+        
+        public bool RemoveDelay(DelayHandle handle) => Scheduler.RemoveDelay(handle);
         
         private void Update()
         {
-            scheduler.CheckDelays(UnityEditor.EditorApplication.timeSinceStartup);
+            Scheduler.CheckDelays(UnityEditor.EditorApplication.timeSinceStartup);
         }
         
-        ~DelayCallerEditor()
+        public void Dispose()
         {
-            scheduler.CallAllDelays();
             UnityEditor.EditorApplication.update -= Update;
         }
     }
     #endif
     internal class DelayScheduler
     {
-        private List<DelayHandle> pendingActions = new();
+        public List<DelayHandle> pendingActions = new();
         
         public void AddDelay(DelayHandle delay)
         {
@@ -148,12 +172,10 @@ namespace CLogic.Utils
             }
         }
         
-        public void CallAllDelays()
+        public void AddDelays(List<DelayHandle> handles, double timeOffsets)
         {
-            foreach (DelayHandle delay in pendingActions)
-            {
-                delay.callback?.Invoke();
-            }
+            handles.ForEach(handle => handle.dueTime += timeOffsets);
+            pendingActions.AddRange(handles);
         }
     }
 }
